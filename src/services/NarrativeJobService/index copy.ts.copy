@@ -1,0 +1,140 @@
+import { JSONRPC11Result, JSONRPC11Error } from "../../main";
+import { JSONRPCError } from "@kbase/ui-lib/lib/comm/GenericClient";
+
+// export type MethodResult = [any | null, JSONRPC11Error | null];
+
+export interface CancelJobParams {
+    job_id: string
+}
+
+export class JSONRPC11Exception extends Error {
+    code: number;
+    data: object;
+    constructor(message: string) {
+        super(message);
+    }
+    setCode(code: number) {
+        this.code = code;
+        return this;
+    }
+    setData(data: object) {
+        this.data = data;
+        return this;
+    }
+    toJSON(): JSONRPC11Error {
+        return {
+            code: this.code,
+            message: this.message,
+            data: this.data
+        };
+    }
+}
+
+abstract class ModuleMethod<T, R> {
+    inputParams: any;
+    static paramCount: number = 1;
+    constructor(inputParams: Array<any>) {
+        this.inputParams = inputParams;
+    }
+    checkParamCount(): [Object] {
+        if (this.inputParams.length !== ModuleMethod.paramCount) {
+            throw new JSONRPC11Exception('Invalid params - wrong number of arguments')
+                .setCode(-32602)
+                .setData({
+                    "expectedNumberOfArguments": 1,
+                    "receivedNumberOfArguments": this.inputParams.length
+                });
+        } else {
+            return this.inputParams;
+        }
+    }
+    abstract checkParamType(possibleParams: [Object]): T;
+
+    checkParams(): T {
+        const check1 = this.checkParamCount();
+        return this.checkParamType(check1);
+    }
+
+    abstract callFunc(): R;
+}
+
+export interface CancelJobResult { }
+
+class CancelJob extends ModuleMethod<CancelJobParams, CancelJobResult> {
+    checkParamType(possibleParams: [any]): CancelJobParams {
+        const [param] = possibleParams;
+        if ('job_id' in param) {
+            const job_id = param.job_id;
+            if (!job_id) {
+                throw new JSONRPC11Exception('Invalid params - missing argument')
+                    .setCode(-32602)
+                    .setData({
+                        "expectedArgument": 'job_id',
+                        "receivedArguments": param.keys()
+                    });
+            } else {
+                return param as CancelJobParams;
+            }
+        } else {
+            throw new JSONRPC11Exception('Invalid params - missing argument')
+                .setCode(-32602)
+                .setData({
+                    "expectedArgument": 'job_id',
+                    "receivedArguments": param.keys()
+                });
+        }
+    }
+    callFunc(): CancelJobResult {
+        const params = this.checkParams();
+        switch (params.job_id) {
+            case 'successful-cancellation':
+                return {};
+            case 'job-not-found':
+                throw new JSONRPC11Exception('Not found')
+                    .setCode(10)
+                    .setData({
+                        job_id: params.job_id
+                    });
+            case 'inadequate-permission':
+                throw new JSONRPC11Exception('Not found')
+                    .setCode(20)
+                    .setData({
+                        job_id: params.job_id
+                    });
+            case 'inadequate-permission':
+                throw new JSONRPC11Exception('Not found')
+                    .setCode(20)
+                    .setData({
+                        job_id: params.job_id
+                    });
+            default:
+                throw new JSONRPC11Exception('Invalid params - job_id not covered in sample data')
+                    .setCode(-32602)
+                    .setData({
+                        job_id: params.job_id,
+                        covered_values: ['a']
+                    });
+        }
+    }
+}
+
+type NarrativeJobServiceMethodResult = CancelJobResult;
+
+export default class NarrativeJobServiceWrapper {
+    async handle(method: string, params: any): Promise<NarrativeJobServiceMethodResult> {
+        switch (method) {
+            case 'cancel_job':
+                return await this.cancelJob(params);
+            default:
+                throw new JSONRPC11Exception('Method not found')
+                    .setCode(-32601)
+                    .setData({
+                        method
+                    });
+        }
+    }
+    async cancelJob(possibleParams: [any]): Promise<CancelJobResult> {
+        const method = new CancelJob(possibleParams)
+        return method.callFunc();
+    }
+}

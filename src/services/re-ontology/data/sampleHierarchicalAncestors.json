@@ -1,0 +1,53 @@
+[
+    {
+        "term": {
+            "namespace": "a",
+            "id": "b",
+            "alt_ids": [
+                "c"
+            ],
+            "name": "d",
+            "comments": [
+                "e"
+            ],
+            "def": {
+                "val": "f",
+                "xrefs": [
+                    {
+                        "val": "g"
+                    }
+                ]
+            },
+            "created": 1,
+            "expired": 2,
+            "subsets": [
+                "h"
+            ],
+            "synonyms": [
+                {
+                    "pred": "exact",
+                    "val": "i",
+                    "xrefs": [
+                        {
+                            "val": "j"
+                        }
+                    ]
+                }
+            ],
+            "type": "k",
+            "xrefs": [
+                {
+                    "val": "l"
+                }
+            ]
+        },
+        "edge": {
+            "id": "m",
+            "type": "is_a",
+            "created": 4,
+            "expired": 5,
+            "from": "z",
+            "to": "a"
+        }
+    }
+]
