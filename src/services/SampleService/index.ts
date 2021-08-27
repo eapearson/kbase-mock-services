@@ -3,7 +3,6 @@ import { JSONRPC11Exception } from '/base/jsonrpc11/types.ts';
 import { GetSample } from './methods/get_sample/GetSample.ts';
 import { GetDataLinksFromSample } from './methods/get_data_links_from_sample/GetDataLinksFromSample.ts';
 import { GetSampleACLs } from './methods/get_sample_acls/GetSampleACLs.ts';
-import { GetFormats } from './methods/get_formats/GetFormats.ts';
 import { GetFieldDefinitions } from './methods/get_field_definitions/GetFieldDefinitions.ts';
 import { GetFieldGroups } from './methods/get_field_groups/GetFieldGroups.ts';
 import { GetSamples } from './methods/get_samples/GetSamples.ts';
