@@ -22,7 +22,7 @@ jobs:
                   # hmm, try this.
                   registry: ghcr.io
                   username: ${{ github.actor }}
-                  password: ${{ secrets.GHCR_TOKEN_KBASE_UI_MOCK_SERVICES }}
+                  password: ${{ secrets.GHCR_TOKEN_KBASE_MOCK_SERVICES }}
             - name: Build and push
               uses: docker/build-push-action@v2
               with:
@@ -36,4 +36,4 @@ jobs:
                       VCS_REF=${{ github.sha }}
                       BRANCH=${{ github.ref }}
                       TAG=${{ github.ref }}
-                  tags: ghcr.io/${{ github.repository_owner }}/kbase-ui-mock-services:main
+                  tags: ghcr.io/${{ github.repository_owner }}/kbase-mock-services:main
