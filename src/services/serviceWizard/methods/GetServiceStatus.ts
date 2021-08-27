@@ -1,21 +1,21 @@
-import ModuleMethod, { ModuleMethodInput } from "../../../base/jsonrpc11/ModuleMethod.ts";
-import { JSONArray } from "../../../types/json.ts";
+import ModuleMethod, { ModuleMethodInput } from '../../../base/jsonrpc11/ModuleMethod.ts';
+import { JSONArray } from '../../../types/json.ts';
 
 export interface Params {
-    "module_name": string;
+    module_name: string;
     version?: string;
 }
 
 export interface Result {
-    "git_commit_hash": string;
+    git_commit_hash: string;
     hash: string;
     health: string;
-    "module_name": string;
+    module_name: string;
     status: string;
     up: number;
     url: string;
     version: string;
-    "release_tags": Array<string>;
+    release_tags: Array<string>;
 }
 
 export interface GetServiceStatusArg extends ModuleMethodInput {
@@ -37,7 +37,7 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
         const moduleName = this.validateStringParam(params, 'module_name');
 
         const result: Params = {
-            "module_name": moduleName
+            module_name: moduleName,
         };
 
         if ('version' in params) {
@@ -66,7 +66,6 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
     // }
     // deno-lint-ignore camelcase
     callFunc({ module_name, version }: Params): Promise<Result> {
-        console.log('service wizard', module_name, version);
         switch (module_name) {
             // case 'xOntologyAPI':
             //     return Promise.resolve({
@@ -91,7 +90,7 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
                     // url: 'http://localhost:3000/dynserv/internal/JobBrowserBFF',
                     url: 'http://localhost:5000/',
                     version: '0.0.1',
-                    release_tags: ['dev']
+                    release_tags: ['dev'],
                 });
             default:
                 throw new Error('Module not supported ' + module_name);
@@ -102,5 +101,4 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
             // return upstreamResult;
         }
     }
-
 }

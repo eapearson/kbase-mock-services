@@ -1,6 +1,6 @@
-import { anyToJSONValue, JSONValue } from "/json.ts";
-import { ensureDirSync, } from "https://deno.land/std@0.103.0/fs/mod.ts";
-import { walkSync } from "https://deno.land/std@0.103.0/fs/mod.ts";
+import { anyToJSONValue, JSONValue } from '/json.ts';
+import { ensureDirSync } from 'https://deno.land/std@0.103.0/fs/mod.ts';
+import { walkSync } from 'https://deno.land/std@0.103.0/fs/mod.ts';
 
 export function saveJSON(dest: string, module: string, name: string, obj: any) {
     const output = JSON.stringify(anyToJSONValue(obj), null, 4);
@@ -13,7 +13,7 @@ export async function getJSON(directory: string, moduleName: string, name: strin
     const fileName = `${name}.json`;
     const path = new URL(fileName, `file://${directory}/${moduleName}/`).pathname;
     const resultData = JSON.parse(await Deno.readTextFile(path));
-    return (resultData as unknown) as JSONValue;
+    return resultData as unknown as JSONValue;
 }
 
 export function getFiles(directory: string, moduleName: string, filter: (path: string) => boolean): Array<string> {

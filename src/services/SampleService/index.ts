@@ -3,7 +3,7 @@ import { JSONRPC11Exception } from '/base/jsonrpc11/types.ts';
 import { GetSample } from './methods/get_sample/GetSample.ts';
 import { GetDataLinksFromSample } from './methods/get_data_links_from_sample/GetDataLinksFromSample.ts';
 import { GetSampleACLs } from './methods/get_sample_acls/GetSampleACLs.ts';
-import { GetFieldDefinitions } from './methods/get_field_definitions/GetFieldDefinitions.ts';
+import { GetFieldSchemas } from './methods/get_field_schemas/GetFieldSchemas.ts';
 import { GetFieldGroups } from './methods/get_field_groups/GetFieldGroups.ts';
 import { GetSamples } from './methods/get_samples/GetSamples.ts';
 
@@ -38,8 +38,8 @@ export default class SampleService extends ServiceWrapper {
                     token,
                     dataDir: this.dataDir,
                 }).run();
-            case 'get_field_definitions':
-                return new GetFieldDefinitions({
+            case 'get_field_schemas':
+                return new GetFieldSchemas({
                     params,
                     token,
                     dataDir: this.dataDir,

@@ -66,8 +66,6 @@ export class AuthServiceHandler extends RESTHandler {
     }
 
     handle({ method, path, query, token, body }: RESTHandleProps): Promise<JSONValue> {
-        console.log('hmm', method, path, query, token, body);
-
         const handler = this.getHandler({ method, path, query, token, body });
 
         if (!handler) {

@@ -1,9 +1,7 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import { JSONObject } from "/json.ts";
-import { SDKBoolean } from "/services/common.ts";
-import { getFiles, getJSON } from "/lib/utils.ts";
-import { Sample, SampleId, SampleVersion } from "../../types/Sample.ts";
-
+import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
+import { SDKBoolean } from '/services/common.ts';
+import { getFiles, getJSON } from '/lib/utils.ts';
+import { Sample, SampleId, SampleVersion } from '../../types/Sample.ts';
 
 export interface SampleIdentifier {
     id: SampleId;
@@ -12,7 +10,7 @@ export interface SampleIdentifier {
 
 export interface GetSamplesParam {
     samples: Array<SampleIdentifier>;
-    "as_admin"?: SDKBoolean;
+    as_admin?: SDKBoolean;
 }
 
 export type GetSamplesParams = [GetSamplesParam];
@@ -25,7 +23,7 @@ export class GetSamples extends ModuleMethod<GetSamplesParams, GetSamplesResults
     // deno-lint-ignore no-explicit-any
     validateParams(possibleParams: Array<any>): GetSamplesParams {
         // TODO: Validate here?
-        return (possibleParams as unknown) as GetSamplesParams;
+        return possibleParams as unknown as GetSamplesParams;
     }
 
     findMostRecentVersion(sampleId: SampleId): SampleVersion {
@@ -48,18 +46,20 @@ export class GetSamples extends ModuleMethod<GetSamplesParams, GetSamplesResults
     }
 
     async callFunc(params: GetSamplesParams): Promise<GetSamplesResults> {
-        const data = await Promise.all(params[0].samples.map(async ({ id, version }) => {
-            const sampleVersion = (() => {
-                if (typeof version === 'undefined') {
-                    // Find most recent version of the sample.
-                    return this.findMostRecentVersion(id);
-                } else {
-                    return version;
-                }
-            })();
-            const fileName = `sample_${id}_${sampleVersion}`;
-            return ((await getJSON(this.dataDir, 'SampleService', fileName)) as unknown) as Sample;
-        }));
+        const data = await Promise.all(
+            params[0].samples.map(async ({ id, version }) => {
+                const sampleVersion = (() => {
+                    if (typeof version === 'undefined') {
+                        // Find most recent version of the sample.
+                        return this.findMostRecentVersion(id);
+                    } else {
+                        return version;
+                    }
+                })();
+                const fileName = `sample_${id}_${sampleVersion}`;
+                return (await getJSON(this.dataDir, 'SampleService', fileName)) as unknown as Sample;
+            })
+        );
         return [data];
     }
 }

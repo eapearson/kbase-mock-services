@@ -1,13 +1,13 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import { JSONObject } from "/types/json.ts";
-import { Username, WSUPA, EpochTimeMS } from "/services/common.ts";
-import { getJSON } from "/lib/utils.ts";
-import { SampleId, SampleVersion, SampleNodeId } from "../../types/Sample.ts";
+import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
+import { JSONObject } from '/types/json.ts';
+import { Username, WSUPA, EpochTimeMS } from '/services/common.ts';
+import { getJSON } from '/lib/utils.ts';
+import { SampleId, SampleVersion, SampleNodeId } from '../../types/Sample.ts';
 
 export interface GetDataLinksFromSampleParam {
     id: SampleId;
     version: SampleVersion;
-    "effective_time"?: EpochTimeMS;
+    effective_time?: EpochTimeMS;
 }
 
 export type GetDataLinksFromSampleParams = [GetDataLinksFromSampleParam];
@@ -37,7 +37,7 @@ export type GetDataLinksFromSampleResults = [GetDataLinksFromSampleResult];
 
 export class GetDataLinksFromSample extends ModuleMethod<GetDataLinksFromSampleParams, GetDataLinksFromSampleResults> {
     validateParams(possibleParams: Array<any>): GetDataLinksFromSampleParams {
-        return (possibleParams as unknown) as GetDataLinksFromSampleParams;
+        return possibleParams as unknown as GetDataLinksFromSampleParams;
     }
 
     async callFunc(params: GetDataLinksFromSampleParams): Promise<GetDataLinksFromSampleResults> {
@@ -45,8 +45,11 @@ export class GetDataLinksFromSample extends ModuleMethod<GetDataLinksFromSampleP
         const id = param.id;
         const version = param.version;
         const fileName = `sample_data_link_${id}_${version}`;
-        console.log('hmm', id, version, fileName);
-        const data = (await getJSON(this.dataDir, 'SampleService', fileName) as unknown) as GetDataLinksFromSampleResult;
+        const data = (await getJSON(
+            this.dataDir,
+            'SampleService',
+            fileName
+        )) as unknown as GetDataLinksFromSampleResult;
         return [data];
     }
 }
