@@ -22,7 +22,7 @@ jobs:
                   # hmm, try this.
                   registry: ghcr.io
                   username: ${{ github.actor }}
-                  password: ${{ secrets.GHCR_TOKEN }}
+                  password: ${{ secrets.GHCR_TOKEN_KBASE_UI_MOCK_SERVICES }}
             - name: Build and push
               uses: docker/build-push-action@v2
               with:
