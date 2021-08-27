@@ -1,18 +1,45 @@
-import { JSONObject, JSONArray, JSONValue } from '../../types/json';
-import { JSONRPC11Exception } from './types';
+import { JSONObject, JSONArray, JSONValue } from '/json.ts';
+import { JSONRPC11Exception } from './types.ts';
+// import AJV from 'ajv';
 
 export interface ModuleMethodInput {
     params: JSONValue;
     token: string | null;
+    dataDir: string;
 }
 
-export default abstract class ModuleMethod<T, R> {
+export default abstract class ModuleMethod<ParamType, ResultType> {
+    // protected static paramsSchema: any;
+    // protected static resultSchema: any;
+    // protected validateParams?(possibleParams: MethodParams): ParamType;
+    // validator: AJV.Ajv;
+
     inputParams: JSONArray;
     token: string | null;
-    static paramCount: number = 1;
-    constructor({ params, token }: ModuleMethodInput) {
+    dataDir: string;
+    // static paramCount: number = 1;
+    constructor({ params, token, dataDir }: ModuleMethodInput) {
         this.inputParams = this.ensureParams(params);
         this.token = token;
+        this.dataDir = dataDir;
+
+        // const paramsSchema = (this.constructor as typeof ModuleMethod).paramsSchema;
+        // const resultSchema = (this.constructor as typeof ModuleMethod).resultSchema;
+
+        // this.validator = new AJV({
+        //     allErrors: true
+        // });
+        // this.validator.addSchema(paramsSchema, 'paramsSchema');
+        // this.validator.addSchema(resultSchema, 'resultSchema');
+    }
+
+    errorInvalidParams(errorText: string) {
+        return new JSONRPC11Exception({
+            message: `Invalid params`,
+            code: -32602,
+            name: 'JSONRPCError',
+            error: null
+        });
     }
 
     errorMissingParam(paramName: string) {
@@ -92,7 +119,7 @@ export default abstract class ModuleMethod<T, R> {
         }
         return possibleObject;
     }
-    protected abstract validateParams(possibleParams: JSONArray): T;
+    protected abstract validateParams(possibleParams: JSONArray): ParamType;
 
     private ensureParams(rawParams: JSONValue): JSONArray {
         if (!(rawParams instanceof Array)) {
@@ -101,8 +128,21 @@ export default abstract class ModuleMethod<T, R> {
         return rawParams;
     }
 
-    private checkParams(): T {
-        return this.validateParams(this.inputParams);
+    private checkParams(): ParamType {
+        // const check1 = this.checkParamCount();
+        // We can check now that it is an array.
+        const params = this.inputParams;
+
+        // return (params[0] as unknown) as ParamType;
+        return (params as unknown) as ParamType;
+
+        // TODO: get working
+        // if (this.validator.validate('paramsSchema', params)) {
+        //     return (params as unknown) as ParamType;
+        // } else {
+        //     throw this.errorInvalidParams(this.validator.errorsText());
+        // }
+
     }
 
     protected validateStringParam(params: JSONObject, key: string): string {
@@ -197,10 +237,9 @@ export default abstract class ModuleMethod<T, R> {
         return value;
     }
 
+    protected abstract callFunc(params: ParamType): Promise<ResultType>;
 
-    protected async abstract callFunc(params: T): Promise<R>;
-
-    async run(): Promise<R> {
+    run(): Promise<ResultType> {
         const params = this.checkParams();
         return this.callFunc(params);
     }

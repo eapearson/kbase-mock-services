@@ -1,4 +1,4 @@
-import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod";
+import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod.ts";
 
 export interface Params {
 }
@@ -13,7 +13,7 @@ export class InternalError extends ModuleMethod<Params, Result> {
         return {
         };
     }
-    async callFunc(params: Params): Promise<Result> {
+    callFunc(params: Params): Promise<Result> {
         // The point of this method is to always throw an internal error, so the
         // result doesn't really matter.
         throw this.errorInternal();

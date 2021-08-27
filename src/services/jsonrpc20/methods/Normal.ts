@@ -5,31 +5,35 @@ export interface NormalParams {
 }
 
 export type NormalResult = {
-    bar: string;
+    status: string;
 };
 
 export class Normal extends ModuleMethod<NormalParams, NormalResult> {
-    validateParams(possibleParams: [any]): NormalParams {
-        if (possibleParams.length !== 1) {
-            throw this.errorInvalidParamCount(1, possibleParams.length);
+    static paramsSchema = {
+        $id: 'https://kbase.us/schemas/services/jsonrpc20/StringParam/params',
+        type: 'object',
+        required: ['foo'],
+        additionalProperties: false,
+        properties: {
+            foo: {
+                type: 'string'
+            }
         }
-        const [possibleParm] = possibleParams;
-        const param = this.ensureObject(possibleParm);
-
-        if (!('foo' in param)) {
-            throw this.errorMissingParam('foo');
+    };
+    static resultSchema = {
+        $id: 'https://kbase.us/schemas/services/jsonrpc20/StringParam/result',
+        type: 'object',
+        required: ['status'],
+        additionalProperties: false,
+        properties: {
+            status: {
+                type: 'string'
+            }
         }
-        const foo = param['foo'];
-        if (typeof foo !== 'string') {
-            throw this.errorWrongParamType('foo', 'string', typeof foo);
-        }
-        return {
-            foo
-        };
-    }
+    };
     async callFunc(params: NormalParams): Promise<NormalResult> {
         return {
-            bar: 'Hi!'
+            status: 'OK'
         };
     }
 }

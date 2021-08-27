@@ -140,11 +140,12 @@ export class ServiceHandler<HandlerClass extends ServiceWrapper> {
             throw this.errorMethodWrongType(typeof request.method);
         }
 
-        if (!request.hasOwnProperty('params')) {
-            throw this.errorParamsMissing();
-        }
+        // if (!request.hasOwnProperty('params')) {
+        //     throw this.errorParamsMissing();
+        // }
 
         if (!(request.params instanceof Array ||
+            typeof request.params === 'undefined' ||
             (typeof request.params === 'object' && request.params instanceof ({}).constructor))) {
             // TODO: upstream problem - it should detect this specifically
             // instead of throwing a gnarly internal parsing error. For one,
@@ -170,7 +171,7 @@ export class ServiceHandler<HandlerClass extends ServiceWrapper> {
 
         try {
             // Header Stuff
-            const token = request.headers.authorization || null;
+            const token = request.headers.authorization;
 
             // Body Stuff
             let requestBody: any;
@@ -194,7 +195,7 @@ export class ServiceHandler<HandlerClass extends ServiceWrapper> {
                 // a bad method name (which it technically is, but still) rather than a 
                 // bad module name. There is also no need to include a stack trace since the error
                 // can be made perfectly understandable as it is.
-                throw this.errorWrongModule(request.method);
+                throw this.errorWrongModule(moduleName);
             }
 
             // const api = new NarrativeJobService();
@@ -209,10 +210,7 @@ export class ServiceHandler<HandlerClass extends ServiceWrapper> {
             // the otherwise rule that result is always an array, and our result value
             // is always the first element.
 
-            rpcResponse = {
-                id, jsonrpc,
-                result: result === null ? result : [result]
-            };
+            rpcResponse = { id, jsonrpc, result };
         } catch (ex) {
             let trace: string | null;
             let error: JSONRPC2Error;

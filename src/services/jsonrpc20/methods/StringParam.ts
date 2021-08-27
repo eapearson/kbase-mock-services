@@ -9,17 +9,27 @@ export type Result = {
 };
 
 export class StringParam extends ModuleMethod<Params, Result> {
-    validateParams(paramsArray: Array<any>): Params {
-        this.checkParamCount(1);
+    static paramsSchema = {
+        $id: 'https://kbase.us/schemas/services/jsonrpc20/StringParam/params',
+        type: 'object',
+        required: ['foo'],
+        properties: {
+            foo: {
+                type: 'string'
+            }
+        }
+    };
+    static resultSchema = {
+        $id: 'https://kbase.us/schemas/services/jsonrpc20/StringParam/result',
+        type: 'object',
+        required: ['status'],
+        properties: {
+            status: {
+                type: 'string'
+            }
+        }
+    };
 
-        const [possibleParams] = paramsArray;
-
-        const params = this.ensureObject(possibleParams);
-
-        const foo = this.validateStringParam(params, 'foo');
-
-        return { foo };
-    }
     async callFunc(params: Params): Promise<Result> {
         return {
             status: 'OK'

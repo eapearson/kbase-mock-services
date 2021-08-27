@@ -1,2 +1,11 @@
+# Dev
 node_modules
 build
+_temp
+
+# IDEs
+/.idea/
+/.vscode/
+
+# macOS
+.DS_Store

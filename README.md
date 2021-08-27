@@ -12,4 +12,28 @@ They cover several use cases:
   - jsonrpc 2.0
   - REST
 
+## Examples
 
+### Run directly 
+
+```bash
+deno run --unstable --allow-net --allow-read  --import-map import_map.json src/index.ts --data-dir `pwd`/datasets/SampleService
+```
+
+### Create image
+
+```bash
+docker build --tag mocker .
+```
+
+
+### Run container
+
+```bash
+docker run -v "$(pwd)/datasets/SampleService:/data" -p 3333:3333 --net kbase-dev  --name mocker --rm mocker
+```
+
+## TODO
+
+- running container should be exitable with Ctrl-C
+- add docker compose examples

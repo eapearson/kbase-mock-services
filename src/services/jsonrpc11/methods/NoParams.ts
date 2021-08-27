@@ -1,4 +1,4 @@
-import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod";
+import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod.ts";
 
 export interface Params {
 }
@@ -15,9 +15,9 @@ export class NoParams extends ModuleMethod<Params, Result> {
         return {
         };
     }
-    async callFunc(params: Params): Promise<Result> {
-        return {
+    callFunc(params: Params): Promise<Result> {
+        return Promise.resolve({
             greeting: 'Hi!'
-        };
+        });
     }
 }

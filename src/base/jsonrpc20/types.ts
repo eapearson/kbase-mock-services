@@ -4,7 +4,7 @@ export interface JSONRPC2Request {
     id: string;
     jsonrpc: '2.0';
     method: string;
-    params: JSONValue;
+    params?: JSONValue;
 }
 
 export interface JSONRPC2Result {

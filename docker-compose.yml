@@ -1,0 +1,11 @@
+version: '3'
+
+# This docker-compose is for developer workflows, not for running in production.
+networks:
+    kbase-dev:
+        name: kbase-dev
+services:
+    mocker:
+        build:
+            context: .
+            dockerfile: Dockerfile

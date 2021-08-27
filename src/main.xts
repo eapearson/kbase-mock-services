@@ -13,6 +13,7 @@ import ServiceHandler from './base/jsonrpc11/ServiceHandler';
 import { ServiceHandler as ServiceHandler20 } from './base/jsonrpc20/ServiceHandler';
 import JSONRPC20TestService from './services/jsonrpc20';
 import ServiceWizard from './services/serviceWizard';
+import WorkspaceService from "./services/Workspace";
 
 const app: express.Application = express();
 
@@ -120,6 +121,14 @@ const serviceWizardService = new ServiceHandler<ServiceWizard>({
     })
 });
 serviceWizardService.start();
+
+const workspaceService = new ServiceHandler<WorkspaceService>({
+    app,
+    path: '/services/ws',
+    module: 'Workspace',
+    handler: new WorkspaceService()
+});
+workspaceService.start();
 
 const jsonrpc11Service = new ServiceHandler<JSONRPC11TestService>({
     app,

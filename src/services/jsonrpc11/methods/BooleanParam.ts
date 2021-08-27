@@ -1,4 +1,4 @@
-import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod";
+import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod.ts";
 
 export interface Params {
     foo: number;
@@ -20,9 +20,9 @@ export class BooleanParam extends ModuleMethod<Params, Result> {
 
         return { foo };
     }
-    async callFunc(params: Params): Promise<Result> {
-        return {
+    callFunc(params: Params): Promise<Result> {
+        return Promise.resolve({
             status: 'OK'
-        };
+        });
     }
 }

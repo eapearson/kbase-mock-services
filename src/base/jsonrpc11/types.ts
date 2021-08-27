@@ -1,4 +1,4 @@
-import { JSONValue } from "../../types/json";
+import { JSONObject, JSONValue } from "/json.ts";
 
 export interface JSONRPC11Request {
     id: string;
@@ -17,7 +17,7 @@ export interface JSONRPC11Error {
     code: number;
     name: string;
     message: string;
-    error?: string | null;
+    error?: string | number | null | JSONObject;
 }
 
 export interface JSONRPC11ErrorResult {
@@ -28,17 +28,12 @@ export interface JSONRPC11ErrorResult {
 
 export type JSONRPC11Response = JSONRPC11Result | JSONRPC11ErrorResult;
 
-interface JSONRPC11ExceptionParam {
-    code: number;
-    name: string;
-    message: string;
-    error?: string | null;
-}
+type JSONRPC11ExceptionParam = JSONRPC11Error;
 
 export class JSONRPC11Exception extends Error {
     code: number;
     name: string;
-    error?: string | null;
+    error?: string | number | null | JSONObject;
     constructor(param: JSONRPC11ExceptionParam) {
         super(param.message);
         this.code = param.code;

@@ -1,7 +1,7 @@
 export interface HandleProps {
     method: string;
     params: any;
-    token: string | null;
+    token?: string;
 }
 
 export abstract class ServiceWrapper {

@@ -1,9 +1,9 @@
 /**
- * A method with no result will actually return null, not null wrapped in an 
+ * A method with no result will actually return null, not null wrapped in an
  * array, just null. That non-wrapping is handled by ServiceHandler.
  */
 
-import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod";
+import ModuleMethod from "../../../base/jsonrpc11/ModuleMethod.ts";
 
 export interface Params {
 }
@@ -18,7 +18,7 @@ export class NoResult extends ModuleMethod<Params, Result> {
         return {
         };
     }
-    async callFunc(params: Params): Promise<Result> {
-        return null;
+    callFunc(params: Params): Promise<Result> {
+        return Promise.resolve(null);
     }
 }

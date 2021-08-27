@@ -1,21 +1,25 @@
 import ModuleMethod from "../../../base/jsonrpc20/ModuleMethod";
+import ModuleMethodNoParams from "../../../base/jsonrpc20/ModuleMethodNoParams";
 
-export interface Params {
-}
+export type Params = void;
 
 export type Result = {
     greeting: string;
 };
 
-export class NoParams extends ModuleMethod<Params, Result> {
-    validateParams(possibleParams: [any]): Params {
-        if (possibleParams.length > 0) {
-            throw this.errorInvalidParamCount(0, possibleParams.length);
+export class NoParams extends ModuleMethodNoParams<Result> {
+    static resultSchema = {
+        $id: 'https://kbase.us/schemas/services/jsonrpc20/NoParam/result',
+        type: 'object',
+        required: ['status'],
+        properties: {
+            greeting: {
+                type: 'string'
+            }
         }
-        return {
-        };
-    }
-    async callFunc(params: Params): Promise<Result> {
+    };
+
+    async callFunc(): Promise<Result> {
         return {
             greeting: 'Hi!'
         };

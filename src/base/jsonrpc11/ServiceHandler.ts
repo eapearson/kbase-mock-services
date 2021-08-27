@@ -1,17 +1,20 @@
-import { JSONValue } from "../../types/json";
-import { Router, Request, Response } from "express";
-import { ServiceWrapper } from "./ServiceWrapper";
-import { JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response, JSONRPC11Error } from "./types";
+import { JSONValue } from "/types/json.ts";
+import { Opine, Request, Response } from "https://deno.land/x/opine@1.4.0/mod.ts";
+import { readAll } from "https://deno.land/std@0.103.0/io/util.ts";
+
+// import { Router, Request, Response } from "express.ts";
+import { ServiceWrapper } from "./ServiceWrapper.ts";
+import { JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response, JSONRPC11Error } from "./types.ts";
 
 export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
-    app: Router;
+    app: Opine;
     id?: string;
     version?: string;
-    method: string;
+    // method: string;
     path: string;
     module: string;
     handler: HandlerClass;
-    constructor({ app, path, module, handler }: { app: Router, path: string, module: string, handler: HandlerClass; }) {
+    constructor({ app, path, module, handler }: { app: Opine, path: string, module: string, handler: HandlerClass; }) {
         this.app = app;
         this.path = path;
         this.module = module;
@@ -45,16 +48,27 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
         return new JSONRPC11Exception({
             code: -32600,
             name: 'JSONRPCError',
-            message: 'Invalid request - incorrect or missing version',
-            error: ''
+            message: 'Invalid request - missing version'
         });
     }
-    errorWrongVersion() {
+    errorWrongVersion(badVersion: string | null) {
         return new JSONRPC11Exception({
             code: -32600,
             name: 'JSONRPCError',
-            message: 'Invalid request - incorrect or missing version',
-            error: ''
+            message: 'Invalid request - incorrect version',
+            error: {
+                badVersion
+            }
+        });
+    }
+    errorInvalidVersion(badVersion: JSONValue) {
+        return new JSONRPC11Exception({
+            code: -32600,
+            name: 'JSONRPCError',
+            message: 'Invalid request - invalid version type',
+            error: {
+                badVersion
+            }
         });
     }
     errorMethodMissing() {
@@ -126,17 +140,21 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             throw this.errorIdWrongType(typeof request.method);
         }
 
-        if (!request.hasOwnProperty('version')) {
+        if (!('version' in request)) {
             // This also not caught by real service.
             throw this.errorEmptyVersion();
         }
 
-        if (request.version !== '1.1') {
-            // This not caught either.
-            throw this.errorWrongVersion();
+        if (typeof request.version !== 'string') {
+            throw this.errorInvalidVersion(request.version);
         }
 
-        if (!request.hasOwnProperty('method')) {
+        if (request.version !== '1.1') {
+            // This not caught either.
+            throw this.errorWrongVersion(request.version);
+        }
+
+        if (!('method' in request)) {
             throw this.errorMethodMissing();
         }
 
@@ -144,14 +162,14 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             throw this.errorMethodWrongType(typeof request.method);
         }
 
-        if (!request.hasOwnProperty('params')) {
+        if (!('params' in request)) {
             throw this.errorParamsMissing();
         }
 
         if (!(request.params instanceof Array)) {
             // TODO: upstream problem - it should detect this specifically
             // instead of throwing a gnarly internal parsing error. For one,
-            // it is not a good error message to propagate; for two, it 
+            // it is not a good error message to propagate; for two, it
             // can be confused with a jsonrpc parse error which would be for
             // invalid javascript.
             throw this.errorParamsNotArray();
@@ -173,32 +191,40 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
 
         try {
             // Header Stuff
-            const token = request.headers.authorization || null;
+            const token = request.get('authorization') || null;
 
             // Body Stuff
-            let requestBody: any;
+
             if (!request.body) {
                 this.errorEmptyBody();
             }
-            try {
-                requestBody = JSON.parse(request.body);
-            } catch (ex) {
-                throw this.errorParse(ex.message);
-            }
+            const requestBody = await (async () => {
+                try {
+                    const raw = await readAll(request.body);
+                    const text = new TextDecoder().decode(raw);
+                    return JSON.parse(text) as JSONValue;
+                } catch (ex) {
+                    console.error(`hmm: ${request.body}`);
+                    throw this.errorParse(ex.message);
+                }
+            })();
 
             const { id, version, method, params } = this.extractRequest(requestBody);
+
+            this.id = id;
 
             const [moduleName, functionName] = method.split('.');
 
             if (moduleName !== this.module) {
                 // TODO: The actual detection of this is less fine grained. It flags it as
-                // a bad method name (which it technically is, but still) rather than a 
+                // a bad method name (which it technically is, but still) rather than a
                 // bad module name. There is also no need to include a stack trace since the error
                 // can be made perfectly understandable as it is.
-                throw this.errorWrongModule(request.method);
+                throw this.errorWrongModule(moduleName);
             }
 
-            // const api = new NarrativeJobService();
+            // TODO: rework catching and throwing errors ... as it is, all errors will have
+            // a null id.
             const result = await this.handler.handle({
                 method: functionName,
                 params,
@@ -211,26 +237,32 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             // is always the first element.
 
             rpcResponse = {
-                id, version,
-                result: result === null ? result : [result]
+                id, version, result
             };
         } catch (ex) {
-            let trace: string | null;
+            // let trace: string | null;
             let error: JSONRPC11Error;
-            response.statusCode = 500;
+            response.status = 500;
             if (ex instanceof JSONRPC11Exception) {
-                trace = null;
+                // trace = null;
                 error = ex.toJSON();
             } else if (ex instanceof Error) {
-                trace = ex.stack || null;
+
+                const trace = (() => {
+                    if (typeof ex.stack === 'undefined') {
+                        return null;
+                    }
+                    return ex.stack.split('\n');
+                })();
                 error = {
                     code: -32500,
                     name: 'JSONRPCError',
                     message: ex.message,
-                    error: trace
+                    error: {
+                        trace
+                    }
                 };
             } else {
-                trace = null;
                 error = {
                     code: -32500,
                     name: 'JSONRPCError',
@@ -246,7 +278,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             };
         }
 
-        response.setHeader('content-type', 'application/json');
+        response.set('content-type', 'application/json');
         response.send(JSON.stringify(rpcResponse));
     }
     start() {
