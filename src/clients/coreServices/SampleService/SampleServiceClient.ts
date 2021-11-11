@@ -1,6 +1,6 @@
 import { EpochTimeMS, Sample, SampleId, SampleNodeId, SampleVersion, SDKBoolean, Username, WSUPA } from './Sample.ts';
 import { ControlledField } from './ControlledField.ts';
-import * as path from 'https://deno.land/std@0.103.0/path/mod.ts';
+import * as path from 'https://deno.land/std@0.114.0/path/mod.ts';
 
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
 

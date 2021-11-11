@@ -1,4 +1,4 @@
-import {parse} from "https://deno.land/std@0.103.0/flags/mod.ts";
+import {parse} from "https://deno.land/std@0.114.0/flags/mod.ts";
 
 export interface Args {
     [k: string]: string

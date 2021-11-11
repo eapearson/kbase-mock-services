@@ -1,4 +1,4 @@
-FROM denoland/deno:1.13.1
+FROM denoland/deno:1.16.1
 
 # see https://hub.docker.com/r/denoland/deno
 

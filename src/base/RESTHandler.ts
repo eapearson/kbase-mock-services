@@ -1,10 +1,5 @@
 import { JSONValue } from '/types/json.ts';
 import { Opine, Request, Response } from 'https://deno.land/x/opine@1.9.0/mod.ts';
-// import { readAll } from "https://deno.land/std@0.103.0/io/util.ts";
-
-// import { Router, Request, Response } from "express.ts";
-// import { ServiceWrapper } from "./ServiceWrapper.ts";
-// import { JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response, JSONRPC11Error } from "./types.ts";
 
 export interface RESTHandleProps {
     method: string;

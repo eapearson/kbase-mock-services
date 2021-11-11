@@ -1,6 +1,6 @@
 import { anyToJSONValue, JSONValue } from '/json.ts';
-import { ensureDirSync } from 'https://deno.land/std@0.103.0/fs/mod.ts';
-import { walkSync } from 'https://deno.land/std@0.103.0/fs/mod.ts';
+import { ensureDirSync } from 'https://deno.land/std@0.114.0/fs/mod.ts';
+import { walkSync } from 'https://deno.land/std@0.114.0/fs/mod.ts';
 
 export function saveJSON(dest: string, module: string, name: string, obj: any) {
     const output = JSON.stringify(anyToJSONValue(obj), null, 4);

@@ -9,6 +9,14 @@ import GetArgs from '/lib/args.ts';
 import RESTService from './base/RESTHandler.ts';
 import { AuthServiceHandler } from './services/Auth/index.ts';
 
+// TODO: get rid of this monkey's patch
+// https://github.com/denoland/deno/issues/7217
+declare global {
+  interface ReadableStream<R = any> {
+    getIterator(options?: { preventCancel?: boolean }): AsyncIterableIterator<R>;
+  }
+}
+
 interface RunServerArgs {
     dataDir: string;
     port: number;

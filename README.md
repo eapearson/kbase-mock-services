@@ -26,7 +26,6 @@ deno run --unstable --allow-net --allow-read  --import-map import_map.json src/i
 docker build --tag mocker .
 ```
 
-
 ### Run container
 
 ```bash
