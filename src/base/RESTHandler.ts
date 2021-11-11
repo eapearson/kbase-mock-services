@@ -1,5 +1,5 @@
 import { JSONValue } from '/types/json.ts';
-import { Opine, Request, Response } from 'https://deno.land/x/opine@1.4.0/mod.ts';
+import { Opine, Request, Response } from 'https://deno.land/x/opine@1.9.0/mod.ts';
 // import { readAll } from "https://deno.land/std@0.103.0/io/util.ts";
 
 // import { Router, Request, Response } from "express.ts";
@@ -28,9 +28,6 @@ export abstract class RESTHandler {
 
 export default class RESTService {
     app: Opine;
-    // id?: string;
-    // version?: string;
-    // method: string;
     path: string | RegExp;
     module: string;
     handler: RESTHandler;
@@ -65,6 +62,20 @@ export default class RESTService {
             const path = request.params['0'];
 
             // const path = request.
+
+            //  if (!request.body) {
+            //     this.errorEmptyBody();
+            // }
+            // const requestBody = await (async () => {
+            //     try {
+            //         const raw = await readAll(request.body);
+            //         const text = new TextDecoder().decode(raw);
+            //         return JSON.parse(text) as JSONValue;
+            //     } catch (ex) {
+            //         console.error(`hmm: ${request.body}`);
+            //         throw this.errorParse(ex.message);
+            //     }
+            // })();
 
             // A REST request may handle based on several attributes:
             // method

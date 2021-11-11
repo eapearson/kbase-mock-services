@@ -1,7 +1,7 @@
 import { JSONValue } from '../../types/json';
 import { Router, Request, Response } from 'express';
-import { ServiceWrapper } from './ServiceWrapper';
-import { JSONRPC2Exception, JSONRPC2Request, JSONRPC2Response, JSONRPC2Error } from './types';
+import { ServiceWrapper } from './ServiceWrapper.ts';
+import { JSONRPC2Exception, JSONRPC2Request, JSONRPC2Response, JSONRPC2Error } from './types.ts';
 
 export class ServiceHandler<HandlerClass extends ServiceWrapper> {
     app: Router;

@@ -17,7 +17,7 @@ They cover several use cases:
 ### Run directly 
 
 ```bash
-deno run --unstable --allow-net --allow-read  --import-map import_map.json src/index.ts --data-dir `pwd`/datasets/SampleService
+deno run --unstable --allow-net --allow-read  --import-map import_map.json src/index.ts --port 4444 --data-dir `pwd`/datasets/examples/SampleService
 ```
 
 ### Create image

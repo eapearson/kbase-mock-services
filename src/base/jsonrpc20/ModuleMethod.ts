@@ -1,5 +1,5 @@
-import { JSONObject, JSONArray, JSONValue } from '../../types/json';
-import { JSONRPC2Exception } from './types';
+import { JSONObject, JSONArray, JSONValue } from '../../types/json.ts';
+import { JSONRPC2Exception } from './types.ts';
 import AJV from 'ajv';
 
 export interface ModuleMethodInput {

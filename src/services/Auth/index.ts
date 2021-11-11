@@ -1,6 +1,7 @@
+import { readAll } from "https://deno.land/std@0.114.0/streams/conversion.ts";
 import { getJSON } from '../../lib/utils.ts';
 import { RESTHandler, RESTHandleProps } from '/base/RESTHandler.ts';
-import { JSONValue } from '/json.ts';
+import { JSONObject, JSONValue } from '/json.ts';
 
 export interface RESTPathHandlerProps {
     dataDir: string;
@@ -48,6 +49,30 @@ export class HandleGETUsers extends RESTPathHandler {
     }
 }
 
+export interface LegacyLoginRequest extends JSONObject {
+    token: string,
+    fields: Array<string>;
+}
+
+/**
+ * Note that the legacy endpoint, according to the auth docs, only supports
+ * returning "user_id".
+ */
+export class HandleLegacyLogin extends RESTPathHandler {
+    async run() {
+        // TODO: make the rest handler generic.
+        // if (!request.body) {
+        //     this.errorEmptyBody();
+        // }
+        const requestBody = this.body as JSONObject;
+        
+        const token = requestBody['token']
+        const fileName = `legacy_${token}`;
+        const data = (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONObject;
+        return data;
+    }
+}
+
 export class AuthServiceHandler extends RESTHandler {
     getHandler({ method, path, query, token, body }: RESTHandleProps): RESTPathHandler | null {
         switch (method) {
@@ -57,6 +82,13 @@ export class AuthServiceHandler extends RESTHandler {
                         return new HandleGETMe({ dataDir: this.dataDir, path, query, token, body });
                     case 'api/V2/users':
                         return new HandleGETUsers({ dataDir: this.dataDir, path, query, token, body });
+                    default:
+                        return null;
+                }
+            case 'POST':
+                switch (path) {
+                    case 'api/legacy/KBase/Sessions/Login':
+                        return new HandleLegacyLogin({dataDir: this.dataDir, path, query, token, body})
                     default:
                         return null;
                 }

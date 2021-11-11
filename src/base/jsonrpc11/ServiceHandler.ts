@@ -1,6 +1,6 @@
 import { JSONValue } from "/types/json.ts";
-import { Opine, Request, Response } from "https://deno.land/x/opine@1.4.0/mod.ts";
-import { readAll } from "https://deno.land/std@0.103.0/io/util.ts";
+import { Opine, Request, Response } from "https://deno.land/x/opine@1.9.0/mod.ts";
+import { readAll } from "https://deno.land/std@0.114.0/io/util.ts";
 
 // import { Router, Request, Response } from "express.ts";
 import { ServiceWrapper } from "./ServiceWrapper.ts";
