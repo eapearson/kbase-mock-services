@@ -1,4 +1,4 @@
-import opine, { text, json, urlencoded } from 'https://deno.land/x/opine@1.9.0/mod.ts';
+import opine, { text, json, urlencoded } from 'https://deno.land/x/opine@1.9.1/mod.ts';
 import { opineCors } from 'https://deno.land/x/cors@v1.2.2/mod.ts';
 import ServiceHandler from '/base/jsonrpc11/ServiceHandler.ts';
 import ServiceWizard from '/services/serviceWizard/index.ts';
@@ -38,7 +38,7 @@ function main() {
 
     app.use(opineCors());
     app.use(text());
-    app.use(json());
+    // app.use(json());
     app.use(urlencoded());
 
     // Add services.

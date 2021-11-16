@@ -24,14 +24,14 @@ export interface ObjectSpecification {
     objid?: number;
     ver?: number;
     ref?: string;
-    obj_path?: Array<ObjectIdentity>;
-    obj_ref_path?: Array<string>;
-    to_obj_path?: Array<ObjectIdentity>;
-    to_obj_ref_path?: Array<string>;
-    find_reference_path?: number; // bool
+    'obj_path'?: Array<ObjectIdentity>;
+    'obj_ref_path'?: Array<string>;
+    'to_obj_path'?: Array<ObjectIdentity>;
+    'to_obj_ref_path'?: Array<string>;
+    'find_reference_path'?: number; // bool
     included?: string;
-    strict_maps?: number; // bool
-    strict_arrays?: number; // bool
+    'strict_maps'?: number; // bool
+    'strict_arrays'?: number; // bool
 }
 
 export interface GetObjectInfo3Params {

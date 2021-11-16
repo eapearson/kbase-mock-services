@@ -36,3 +36,7 @@ docker run -v "$(pwd)/datasets/SampleService:/data" -p 3333:3333 --net kbase-dev
 
 - running container should be exitable with Ctrl-C
 - add docker compose examples
+
+
+export DATASET_PATH=`pwd`/datasets/SampleService
+docker compose up

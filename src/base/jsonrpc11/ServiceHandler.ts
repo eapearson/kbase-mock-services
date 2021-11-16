@@ -1,8 +1,7 @@
 import { JSONValue } from "/types/json.ts";
-import { Opine, Request, Response } from "https://deno.land/x/opine@1.9.0/mod.ts";
+import { Opine, Request, Response } from "https://deno.land/x/opine@1.9.1/mod.ts";
 import { readAll } from "https://deno.land/std@0.114.0/io/util.ts";
 
-// import { Router, Request, Response } from "express.ts";
 import { ServiceWrapper } from "./ServiceWrapper.ts";
 import { JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response, JSONRPC11Error } from "./types.ts";
 
@@ -198,13 +197,20 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             if (!request.body) {
                 this.errorEmptyBody();
             }
-            const requestBody = await (async () => {
+            // const requestBody = (() => {
+            //     try {
+            //         return request.body as JSONValue;
+            //     } catch (ex) {
+            //         throw this.errorParse(ex.message);
+            //     }
+            // })();
+
+             const requestBody = await (async () => {
                 try {
                     const raw = await readAll(request.body);
                     const text = new TextDecoder().decode(raw);
                     return JSON.parse(text) as JSONValue;
                 } catch (ex) {
-                    console.error(`hmm: ${request.body}`);
                     throw this.errorParse(ex.message);
                 }
             })();

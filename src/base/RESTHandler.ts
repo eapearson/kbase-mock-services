@@ -1,5 +1,5 @@
 import { JSONValue } from '/types/json.ts';
-import { Opine, Request, Response } from 'https://deno.land/x/opine@1.9.0/mod.ts';
+import { Opine, Request, Response } from 'https://deno.land/x/opine@1.9.1/mod.ts';
 
 export interface RESTHandleProps {
     method: string;
