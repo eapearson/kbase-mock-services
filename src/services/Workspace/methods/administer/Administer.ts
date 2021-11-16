@@ -15,7 +15,7 @@ import { GetObjectInfo3Param, GetObjectInfo3Params, GetObjectInfo3Results } from
 export interface AdminsterParam {
     command: string;
     user?: string;
-    params: [JSONObject];
+    params: JSONObject;
 }
 
 
@@ -80,11 +80,10 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
         return (possibleParams as unknown) as AdministerParams;
     }
 
-    async getPermissionsMass(params: AdministerParams): Promise<GetPermissionsMassResult> {
+    async getPermissionsMass(params: GetPermissionsMassParams): Promise<GetPermissionsMassResult> {
         // Get the workspaces
-        const param = params[0].params[0] as unknown as GetPermissionsMassParams;
 
-        const perms = await Promise.all(param.workspaces.map<Promise<Perms>>(async ({ id }) => {
+        const perms = await Promise.all(params.workspaces.map<Promise<Perms>>(async ({ id }) => {
             const fileName = `workspace_perms_${id}`;
             return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
         }));
@@ -128,11 +127,11 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
             case 'listModRequests':
                 return await Promise.resolve([[]]);
             case 'getPermissionsMass':
-                return this.getPermissionsMass(params) as unknown as Promise<AdministerResults>
+                return this.getPermissionsMass(params[0].params as unknown as GetPermissionsMassParams) as unknown as Promise<AdministerResults>
             case 'getObjectInfo':
-                return this.getObjectInfo(params[0].params[0] as unknown as GetObjectInfo3Param) as unknown as Promise<GetObjectInfo3Results>
+                return this.getObjectInfo(params[0].params as unknown as GetObjectInfo3Param) as unknown as Promise<GetObjectInfo3Results>
             case 'listWorkspaceIDs':
-                return this.listWorkspaceIDs(this.userRequired(params[0].user), params[0].params[0] as unknown as ListWorkspaceIDsParams) as unknown as Promise<ListWorkspaceIDsResults>
+                return this.listWorkspaceIDs(this.userRequired(params[0].user), params[0].params as unknown as ListWorkspaceIDsParams) as unknown as Promise<ListWorkspaceIDsResults>
             default:
                 throw new JSONRPC11Exception({
                     message: 'Invalid params - "command" not recognized',
