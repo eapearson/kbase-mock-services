@@ -1,9 +1,9 @@
 import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
 import {JSONRPC11Exception} from "/base/jsonrpc11/types.ts";
 import {JSONObject, JSONValue} from "/json.ts";
-import {ObjectInfo, ObjectSpecification} from "../common.ts";
+import {ObjectInfo} from "../common.ts";
 import {getJSON} from "/lib/utils.ts";
-import { GetObjectInfo3Param, GetObjectInfo3Params, GetObjectInfo3Result, GetObjectInfo3Results } from "../get_object_info3/GetObjectInfo3.ts";
+import { GetObjectInfo3Param, GetObjectInfo3Results } from "../get_object_info3/GetObjectInfo3.ts";
 
 
 // export interface GetObjectInfo3Param {
@@ -98,18 +98,34 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
         // Get the workspaces
         // const param = [0] as unknown as GetPermissionsMassParams;
 
-        const infos = await Promise.all(params.objects.map<Promise<ObjectInfo>>(async ({ ref }) => {
+        const ignoreErrors = params.ignoreErrors === 1;
+
+        const infos = await Promise.all(params.objects.map<Promise<ObjectInfo | null>>(async ({ ref }) => {
             const [workspaceId, objectId, version] = ref!.split('/');
             const objectInfoFilename = `object_info_${workspaceId}-${objectId}-${version}`;
-            const objectInfo = (await getJSON(this.dataDir, 'Workspace', objectInfoFilename)) as unknown as ObjectInfo;
-            return objectInfo;
+            try {
+                return (await getJSON(this.dataDir, 'Workspace', objectInfoFilename)) as unknown as ObjectInfo;
+            } catch (ex) {
+                if (ignoreErrors) {
+                    return null;
+                } else {
+                    throw ex;
+                }
+            }
         }));
 
-        const paths = await Promise.all(params.objects.map<Promise<[string]>>(async ({ ref }) => {
+        const paths = await Promise.all(params.objects.map<Promise<[string] | null>>(async ({ ref }) => {
             const [workspaceId, objectId, version] = ref!.split('/');
             const objectPathFilename = `object_info_path_${workspaceId}-${objectId}-${version}`;
-            const objectPath = (await getJSON(this.dataDir, 'Workspace', objectPathFilename)) as unknown as [string];
-            return objectPath;
+            try {
+                return (await getJSON(this.dataDir, 'Workspace', objectPathFilename)) as unknown as [string];
+            } catch (ex) {
+                if (ignoreErrors) {
+                    return null;
+                } else {
+                    throw ex;
+                }
+            }
         }));
         return [{
             infos, paths

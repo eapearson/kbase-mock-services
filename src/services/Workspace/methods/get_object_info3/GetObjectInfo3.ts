@@ -14,8 +14,8 @@ export interface GetObjectInfo3Param {
 export type GetObjectInfo3Params = [GetObjectInfo3Param];
 
 export interface GetObjectInfo3Result extends JSONObject {
-    infos: Array<ObjectInfo>;
-    paths: Array<Array<string>>;
+    infos: Array<ObjectInfo | null>;
+    paths: Array<Array<string> | null>;
 }
 
 export type GetObjectInfo3Results = [GetObjectInfo3Result];
