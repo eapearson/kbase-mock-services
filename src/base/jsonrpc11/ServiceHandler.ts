@@ -231,13 +231,13 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
 
             // TODO: rework catching and throwing errors ... as it is, all errors will have
             // a null id.
-            console.log('[handle] request', functionName, params);
+            console.log('[handle] request', functionName, JSON.stringify(params, null, 4));
             const result = await this.handler.handle({
                 method: functionName,
                 params,
                 token
             });
-            console.log('[handle] response', result);
+            console.log('[handle] response', JSON.stringify(result, null, 4));
 
             // TODO: We need to handle one special case here. For some inexeplicable
             // reason our jsonrpc methods can return a plain null value, violation
