@@ -3,7 +3,7 @@ import {JSONRPC11Exception} from "/base/jsonrpc11/types.ts";
 import {JSONObject, JSONValue} from "/json.ts";
 import {ObjectInfo, ObjectSpecification} from "../common.ts";
 import {getJSON} from "/lib/utils.ts";
-import { GetObjectInfo3Param, GetObjectInfo3Params, GetObjectInfo3Results } from "../get_object_info3/GetObjectInfo3.ts";
+import { GetObjectInfo3Param, GetObjectInfo3Params, GetObjectInfo3Result, GetObjectInfo3Results } from "../get_object_info3/GetObjectInfo3.ts";
 
 
 // export interface GetObjectInfo3Param {
@@ -33,6 +33,8 @@ export type Perms = Record<string, string>;
 export interface GetPermissionsMassResult {
     perms: Array<Perms>;
 }
+
+export type GetPermissionsMassResults = [GetPermissionsMassResult];
 
 export interface ListWorkspaceIDsParams extends JSONObject {
     perm: string;
@@ -80,40 +82,49 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
         return (possibleParams as unknown) as AdministerParams;
     }
 
-    async getPermissionsMass(params: GetPermissionsMassParams): Promise<GetPermissionsMassResult> {
+    async getPermissionsMass(params: GetPermissionsMassParams): Promise<GetPermissionsMassResults> {
         // Get the workspaces
 
         const perms = await Promise.all(params.workspaces.map<Promise<Perms>>(async ({ id }) => {
             const fileName = `workspace_perms_${id}`;
             return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
         }));
-        return {
+        return [{
             perms
-        }
+        }]
     }
 
-    async getObjectInfo(params: GetObjectInfo3Param): Promise<GetPermissionsMassResult> {
+    async getObjectInfo(params: GetObjectInfo3Param): Promise<GetObjectInfo3Results> {
         // Get the workspaces
         // const param = [0] as unknown as GetPermissionsMassParams;
 
-        const perms = await Promise.all(params.objects.map<Promise<Perms>>(async ({ ref }) => {
+        const infos = await Promise.all(params.objects.map<Promise<ObjectInfo>>(async ({ ref }) => {
             const [workspaceId, objectId, version] = ref!.split('/');
-            const fileName = `object_info_${workspaceId}-${objectId}-${version}`;
-            return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
+            const objectInfoFilename = `object_info_${workspaceId}-${objectId}-${version}`;
+            const objectInfo = (await getJSON(this.dataDir, 'Workspace', objectInfoFilename)) as unknown as ObjectInfo;
+            return objectInfo;
         }));
-        return {
-            perms
-        }
+
+        const paths = await Promise.all(params.objects.map<Promise<[string]>>(async ({ ref }) => {
+            const [workspaceId, objectId, version] = ref!.split('/');
+            const objectPathFilename = `object_info_path_${workspaceId}-${objectId}-${version}`;
+            const objectPath = (await getJSON(this.dataDir, 'Workspace', objectPathFilename)) as unknown as [string];
+            return objectPath;
+        }));
+        return [{
+            infos, paths
+        }]
     }
 
-     async listWorkspaceIDs(user: string, params: ListWorkspaceIDsParams): Promise<ListWorkspaceIDsResult> {
+    async listWorkspaceIDs(user: string, params: ListWorkspaceIDsParams): Promise<ListWorkspaceIDsResults> {
         // Get the workspaces
         // const param = [0] as unknown as GetPermissionsMassParams;
          
         const fileName = `list_workspace_ids_${user}`;
          
-        return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as ListWorkspaceIDsResult;
-     }
+        const result = (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as ListWorkspaceIDsResult;
+        return [result];
+    }
     
     userRequired(username?: string) {
         if (typeof username === 'undefined') {
