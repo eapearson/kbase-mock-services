@@ -39,6 +39,9 @@ export class HandleGETUsers extends RESTPathHandler {
         const usernames = this.query.list.split(',');
         const users: { [key: string]: JSONValue } = {};
         for (const username of usernames) {
+            if (username.length === 0) {
+                continue;
+            }
             const filename = `user_${username}`;
             try {
                 const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
