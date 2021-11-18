@@ -38,11 +38,15 @@ export class HandleGETMe extends RESTPathHandler {
 export class HandleGETUsers extends RESTPathHandler {
     async run() {
         const usernames = this.query.list.split(',');
-        const users: { [key: string]: JSONValue } = {};
+        // const users: { [key: string]: JSONValue } = {};
+        const users: Array<{ id: string, display: string }> = [];
         for (const username of usernames) {
             const filename = `user_${username}`;
-            const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
-            users[username] = userDisplayName;
+            const display = await getJSON(this.dataDir, 'Auth', filename) as string;
+            users.push({
+                id: username,
+                display
+            })
         }
 
         return users;
