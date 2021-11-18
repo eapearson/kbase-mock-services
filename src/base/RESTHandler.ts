@@ -139,7 +139,9 @@ export default class RESTService {
                 }
             } else if (ex instanceof AppError) {
                 response.setStatus(400);
-                rpcResponse = ex.toJSON()
+                rpcResponse = {
+                    error: ex.toJSON()
+                };
                 response.set('content-type', 'application/json');
                 response.send(JSON.stringify(rpcResponse));
             } else {
