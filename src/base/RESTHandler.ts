@@ -101,18 +101,22 @@ export default class RESTService {
                 response.setStatus(404);
                 if (request.accepts('application/json')) {
                     rpcResponse = {
-                        message: 'Not Found'
+                        error: {
+                            message: ex.message
+                        }
                     }
                     response.set('content-type', 'application/json');
                     response.send(JSON.stringify(rpcResponse));
                 } else {
                     response.set('content-type', 'text/plain');
-                    response.send('Not Found');
+                    response.send(ex.message);
                 }
             } else {
                 response.setStatus(400);
                 rpcResponse = {
-                    message: ex.message,
+                    error: {
+                        message: ex.message,
+                    }
                 };
                 response.set('content-type', 'application/json');
                 response.send(JSON.stringify(rpcResponse));

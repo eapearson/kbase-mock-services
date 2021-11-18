@@ -105,7 +105,7 @@ export class AuthServiceHandler extends RESTHandler {
         const handler = this.getHandler({ method, path, query, token, body });
 
         if (!handler) {
-            throw new NotFoundError('404!!!');
+            throw new NotFoundError('HTTP 404 Not Found');
         }
         return handler.run();
     }
