@@ -21,6 +21,11 @@ export abstract class RESTHandler {
     abstract handle(props: RESTHandleProps): Promise<JSONValue>;
 }
 
+export class NotFoundError extends Error {
+    status = 404;
+    statusMessage = 'Not Found';
+}
+
 export default class RESTService {
     app: Opine;
     path: string | RegExp;
@@ -89,14 +94,30 @@ export default class RESTService {
             });
 
             rpcResponse = result;
+            response.set('content-type', 'application/json');
+            response.send(JSON.stringify(rpcResponse));
         } catch (ex) {
-            rpcResponse = {
-                message: ex.message,
-            };
+            if (ex instanceof NotFoundError) {
+                response.setStatus(404);
+                if (request.accepts('application/json')) {
+                    rpcResponse = {
+                        message: 'Not Found'
+                    }
+                    response.set('content-type', 'application/json');
+                    response.send(JSON.stringify(rpcResponse));
+                } else {
+                    response.set('content-type', 'text/plain');
+                    response.send('Not Found');
+                }
+            } else {
+                response.setStatus(400);
+                rpcResponse = {
+                    message: ex.message,
+                };
+                response.set('content-type', 'application/json');
+                response.send(JSON.stringify(rpcResponse));
+            }
         }
-
-        response.set('content-type', 'application/json');
-        response.send(JSON.stringify(rpcResponse));
     }
     start() {
         this.app.route(this.path).all(this.handle.bind(this));

@@ -5,8 +5,8 @@ export interface ServiceStatus {
     state: string;
     message: string;
     version: string;
-    git_url: string;
-    git_commit_hash: string;
+    'git_url': string;
+    'git_commit_hash': string;
 }
 
 export type StatusParams = [];

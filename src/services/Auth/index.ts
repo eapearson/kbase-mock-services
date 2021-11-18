@@ -1,6 +1,5 @@
-import { readAll } from "https://deno.land/std@0.114.0/streams/conversion.ts";
 import { getJSON } from '../../lib/utils.ts';
-import { RESTHandler, RESTHandleProps } from '/base/RESTHandler.ts';
+import { RESTHandler, RESTHandleProps, NotFoundError } from '/base/RESTHandler.ts';
 import { JSONObject, JSONValue } from '/json.ts';
 
 export interface RESTPathHandlerProps {
@@ -106,7 +105,7 @@ export class AuthServiceHandler extends RESTHandler {
         const handler = this.getHandler({ method, path, query, token, body });
 
         if (!handler) {
-            throw new Error('404!!!');
+            throw new NotFoundError('404!!!');
         }
         return handler.run();
     }
