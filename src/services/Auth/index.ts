@@ -41,8 +41,13 @@ export class HandleGETUsers extends RESTPathHandler {
         const users: { [key: string]: JSONValue } = {};
         for (const username of usernames) {
             const filename = `user_${username}`;
-            const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
-            users[username] = userDisplayName;
+            try {
+                const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
+                users[username] = userDisplayName;
+            } catch (ex) {
+                // ignore
+                console.warn(`Ignoring missing user ${username}: ${ex.message}`);
+            }
         }
 
         return users;
