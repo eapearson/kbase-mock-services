@@ -26,6 +26,32 @@ export class NotFoundError extends Error {
     statusMessage = 'Not Found';
 }
 
+export class AppError extends Error {
+    httpStatus: number;
+    errorMessage: string;
+    errorCode: number;
+    httpStatusMessage: string;
+    constructor(errorMessage: string, errorCode: number, httpStatus: number, httpStatusMessage: string) {
+        super(`${errorCode} ${errorMessage}`);
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
+        this.httpStatus = httpStatus;
+        this.httpStatusMessage = httpStatusMessage;
+    }
+
+    toJSON() {
+        return {
+            httpcode: this.httpStatus,
+            httpstatus: this.httpStatusMessage,
+            appcode: this.errorCode,
+            apperror: this.errorMessage,
+            message: this.message,
+            callid: 'foo',
+            time: Date.now()
+        }
+    }
+}
+
 export default class RESTService {
     app: Opine;
     path: string | RegExp;
@@ -111,6 +137,11 @@ export default class RESTService {
                     response.set('content-type', 'text/plain');
                     response.send(ex.message);
                 }
+            } else if (ex instanceof AppError) {
+                response.setStatus(400);
+                rpcResponse = ex.toJSON()
+                response.set('content-type', 'application/json');
+                response.send(JSON.stringify(rpcResponse));
             } else {
                 response.setStatus(400);
                 rpcResponse = {

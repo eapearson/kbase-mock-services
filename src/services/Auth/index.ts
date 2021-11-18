@@ -1,5 +1,5 @@
 import { getJSON } from '../../lib/utils.ts';
-import { RESTHandler, RESTHandleProps, NotFoundError } from '/base/RESTHandler.ts';
+import { RESTHandler, RESTHandleProps, NotFoundError, AppError } from '/base/RESTHandler.ts';
 import { JSONObject, JSONValue } from '/json.ts';
 
 export interface RESTPathHandlerProps {
@@ -24,10 +24,24 @@ export abstract class RESTPathHandler {
         this.body = body;
     }
     abstract run(): Promise<JSONValue>;
+    requireToken() {
+        if (this.token === null) {
+            throw new AppError('No authentication token', 10010, 400, 'Bad Request');
+        }
+        if (!/^[A-Z0-9]{32}$/.test(this.token)) {
+            throw new AppError('Invalid token', 10020, 401, 'Unauthorized');
+        }
+    }
+    validateUsername(username: string) {
+        if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(username)) {
+            throw new AppError('Illegal user name', 30010, 400, 'Bad Request');
+        }
+    }
 }
 
 export class HandleGETMe extends RESTPathHandler {
     async run() {
+        this.requireToken();
         const fileName = `me_${this.token}`;
         const data = (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONValue;
         return data;
@@ -36,12 +50,14 @@ export class HandleGETMe extends RESTPathHandler {
 
 export class HandleGETUsers extends RESTPathHandler {
     async run() {
+        this.requireToken();
         const usernames = this.query.list.split(',');
         const users: { [key: string]: JSONValue } = {};
         for (const username of usernames) {
             if (username.length === 0) {
                 continue;
             }
+            this.validateUsername(username);
             const filename = `user_${username}`;
             try {
                 const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
@@ -80,8 +96,11 @@ export class HandleLegacyLogin extends RESTPathHandler {
     }
 }
 
+
+
 export class AuthServiceHandler extends RESTHandler {
     getHandler({ method, path, query, token, body }: RESTHandleProps): RESTPathHandler | null {
+       
         switch (method) {
             case 'GET':
                 switch (path) {
