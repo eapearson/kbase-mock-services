@@ -4,6 +4,7 @@ import {JSONObject, JSONValue} from "/json.ts";
 import {ObjectInfo} from "../common.ts";
 import {getJSON} from "/lib/utils.ts";
 import { GetObjectInfo3Param, GetObjectInfo3Results } from "../get_object_info3/GetObjectInfo3.ts";
+import { ListWorkspaceIDsParams, ListWorkspaceIDsResult, ListWorkspaceIDsResults } from "../list_workspace_ids/ListWorkspaceIDs.ts";
 
 
 // export interface GetObjectInfo3Param {
@@ -35,19 +36,6 @@ export interface GetPermissionsMassResult {
 }
 
 export type GetPermissionsMassResults = [GetPermissionsMassResult];
-
-export interface ListWorkspaceIDsParams extends JSONObject {
-    perm: string;
-    excludeGlobal: number;
-    onlyGlobal: number;
-}
-
-export interface ListWorkspaceIDsResult extends JSONObject {
-    workspaces: Array<number>;
-    pub: Array<number>;
-}
-
-export type ListWorkspaceIDsResults = [ListWorkspaceIDsResult];
 
 
 export type AdministerParams = [AdminsterParam];
@@ -136,7 +124,7 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
         // Get the workspaces
         // const param = [0] as unknown as GetPermissionsMassParams;
          
-        const fileName = `list_workspace_ids_${user}`;
+        const fileName = `list_workspace_ids-user-${user}`;
          
         const result = (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as ListWorkspaceIDsResult;
         return [result];
