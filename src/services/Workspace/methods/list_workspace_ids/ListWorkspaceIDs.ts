@@ -35,7 +35,7 @@ export class ListWorkspaceIDs extends ModuleMethod<ListWorkspaceIDsParams, ListW
                 return null;
             } return username;
         })();
-        let fileName: string;;
+        let fileName: string;
         if (username === null) {
             fileName = `list_workspace_ids-anonymous`;
         } else {

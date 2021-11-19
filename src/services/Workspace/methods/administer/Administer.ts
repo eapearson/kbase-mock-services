@@ -75,7 +75,16 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
 
         const perms = await Promise.all(params.workspaces.map<Promise<Perms>>(async ({ id }) => {
             const fileName = `workspace_perms_${id}`;
-            return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
+            try {
+                return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
+            } catch (ex) {
+                throw new JSONRPC11Exception({
+                    code: 1,
+                    message: `No workspace with id ${id} exists`,
+                    name: 'WorkspaceDoesNotExist',
+                    error: ex.message
+                })
+            }
         }));
         return [{
             perms
