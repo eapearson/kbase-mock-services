@@ -3,6 +3,7 @@ import { Status } from './methods/status/Status.ts';
 import { JSONRPC11Exception } from '../../base/jsonrpc11/types.ts';
 import { GetObjectInfo3 } from './methods/get_object_info3/GetObjectInfo3.ts';
 import { Administer } from './methods/administer/Administer.ts';
+import { ListWorkspaceIDs } from "./methods/list_workspace_ids/ListWorkspaceIDs.ts";
 
 export default class WorkspaceService extends ServiceWrapper {
     handle({ method, params, token }: HandleProps): Promise<any> {
@@ -15,6 +16,12 @@ export default class WorkspaceService extends ServiceWrapper {
                 }).run();
             case 'get_object_info3':
                 return new GetObjectInfo3({
+                    params,
+                    token,
+                    dataDir: this.dataDir,
+                }).run();
+            case 'list_workspace_ids':
+                return new ListWorkspaceIDs({
                     params,
                     token,
                     dataDir: this.dataDir,
