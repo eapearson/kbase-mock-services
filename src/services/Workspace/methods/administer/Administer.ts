@@ -79,9 +79,9 @@ export class Administer extends ModuleMethod<AdministerParams, AdministerResults
                 return (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as Perms;
             } catch (ex) {
                 throw new JSONRPC11Exception({
-                    code: 1,
+                    name: 'JSONRPCError',
+                    code: -32500,
                     message: `No workspace with id ${id} exists`,
-                    name: 'WorkspaceDoesNotExist',
                     error: ex.message
                 })
             }
