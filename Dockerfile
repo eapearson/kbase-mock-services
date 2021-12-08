@@ -1,5 +1,7 @@
 FROM denoland/deno:1.16.1
 
+LABEL org.opencontainers.image.source https://github.com/eapearson/kbase-mock-services
+
 # see https://hub.docker.com/r/denoland/deno
 
 EXPOSE 3333 
