@@ -4,8 +4,8 @@ build
 _temp
 
 # IDEs
-/.idea/
-/.vscode/
+.idea/
+.vscode/
 
 # macOS
 .DS_Store
