@@ -1,5 +1,5 @@
 import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { JSONObject } from '/types/json.ts';
+import { JSONObject, JSONValue } from '/types/json.ts';
 import { Username, WSUPA, EpochTimeMS } from '/services/common.ts';
 import { getJSON } from '/lib/utils.ts';
 import { SampleId, SampleVersion, SampleNodeId } from '../../types/Sample.ts';
@@ -7,7 +7,7 @@ import { SampleId, SampleVersion, SampleNodeId } from '../../types/Sample.ts';
 export interface GetDataLinksFromSampleParam {
     id: SampleId;
     version: SampleVersion;
-    effective_time?: EpochTimeMS;
+    'effective_time'?: EpochTimeMS;
 }
 
 export type GetDataLinksFromSampleParams = [GetDataLinksFromSampleParam];
@@ -36,7 +36,7 @@ export interface GetDataLinksFromSampleResult {
 export type GetDataLinksFromSampleResults = [GetDataLinksFromSampleResult];
 
 export class GetDataLinksFromSample extends ModuleMethod<GetDataLinksFromSampleParams, GetDataLinksFromSampleResults> {
-    validateParams(possibleParams: Array<any>): GetDataLinksFromSampleParams {
+    validateParams(possibleParams: Array<JSONValue>): GetDataLinksFromSampleParams {
         return possibleParams as unknown as GetDataLinksFromSampleParams;
     }
 

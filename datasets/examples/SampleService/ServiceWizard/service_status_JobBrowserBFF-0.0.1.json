@@ -1,0 +1,13 @@
+{
+    "module_name": "JobBrowserBFF",
+    "version": "0.0.1",
+    "git_commit_hash": "fake",
+    "hash": "fake",
+    "health": "healthy",
+    "status": "active",
+    "up": 1,
+    "url": "http: //localhost:5000/",
+    "release_tags": [
+        "dev"
+    ]
+}

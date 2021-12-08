@@ -9,7 +9,7 @@ export interface GenericClientConstructorParams extends ServiceClientParams {
 }
 
 export default class GenericClient extends ServiceClient {
-    module: string = '';
+    module = '';
 
     constructor(params: GenericClientConstructorParams) {
         super(params);

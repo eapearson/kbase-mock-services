@@ -62,7 +62,7 @@ export function isJSONValue(value: any): value is JSONValue {
 export function objectToJSONObject(obj: {}): JSONObject {
     const x: JSONObject = {};
     for (const [k, v] of Object.entries(obj)) {
-        if (typeof k !== undefined) {
+        if (typeof k !== 'undefined') {
             // TODO: Ensure json value
             x[k] = v as JSONValue;
         }

@@ -1,33 +1,45 @@
 import ModuleMethod, { ModuleMethodInput } from '../../../base/jsonrpc11/ModuleMethod.ts';
-import { JSONArray } from '../../../types/json.ts';
+import GenericClient from "../../../clients/JSONRPC11/GenericClient.ts";
+import { getJSON } from "../../../lib/utils.ts";
+import { JSONArray, JSONArrayOf, JSONObject } from '../../../types/json.ts';
 
-export interface Params {
-    module_name: string;
+export interface Param  {
+    'module_name': string;
     version?: string;
 }
 
-export interface Result {
-    git_commit_hash: string;
-    hash: string;
-    health: string;
-    module_name: string;
-    status: string;
-    up: number;
-    url: string;
+export type Params = [Param];
+
+export type SDKBoolean = number;
+
+export interface ServiceStatus extends JSONObject {
+    'module_name': string;
     version: string;
-    release_tags: Array<string>;
+    'git_commit_hash': string;
+    'release_tags': Array<string>;
+    hash: string;
+    url: string;
+    up: SDKBoolean;
+    status: string;
+    health: string;
 }
+
+export type Results = [ServiceStatus];
+
+// export type GetServiceStatusArg = ModuleMethodInput;
 
 export interface GetServiceStatusArg extends ModuleMethodInput {
-    // upstreamURL: string;
+    upstreamURL?: string;
 }
 
-export class GetServiceStatus extends ModuleMethod<Params, Result> {
-    // upstreamURL: string;
+export class GetServiceStatus extends ModuleMethod<Params, Results> {
+    upstreamURL?: string;
+
     constructor(arg: GetServiceStatusArg) {
         super(arg);
-        // this.upstreamURL = arg.upstreamURL;
+        this.upstreamURL = arg.upstreamURL;
     }
+
     validateParams(paramsArray: JSONArray): Params {
         this.checkParamCount(1);
 
@@ -36,8 +48,8 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
 
         const moduleName = this.validateStringParam(params, 'module_name');
 
-        const result: Params = {
-            module_name: moduleName,
+        const result: Param = {
+            'module_name': moduleName,
         };
 
         if ('version' in params) {
@@ -45,60 +57,55 @@ export class GetServiceStatus extends ModuleMethod<Params, Result> {
             result.version = version;
         }
 
-        return result;
+        return [result];
     }
-    // async callUpstreamService(module_name: string, version?: string): Promise<Result> {
-    //     const client = new GenericClient({
-    //         url: this.upstreamURL,
-    //         token: this.token || undefined,
-    //         module: 'ServiceWizard'
-    //     });
-    //
-    //     try {
-    //         const [result] = await client.callFunc<[Params], [Result]>('get_service_status', [{
-    //             module_name, version
-    //         }]);
-    //         return result;
-    //     } catch (ex) {
-    //         console.error('ERROR', ex.message);
-    //         return Promise.reject(ex);
-    //     }
-    // }
-    // deno-lint-ignore camelcase
-    callFunc({ module_name, version }: Params): Promise<Result> {
-        switch (module_name) {
-            // case 'xOntologyAPI':
-            //     return Promise.resolve({
-            //         git_commit_hash: 'fake',
-            //         hash: 'fake',
-            //         health: 'healthy',
-            //         module_name: 'OntologyAPI',
-            //         status: 'active',
-            //         up: 1,
-            //         url: 'http://localhost:3001/dynserv/instance/OntologyAPI',
-            //         version: '0.0.1',
-            //         release_tags: ['dev']
-            //     });
-            case 'JobBrowserBFF':
-                return Promise.resolve({
-                    git_commit_hash: 'fake',
-                    hash: 'fake',
-                    health: 'healthy',
-                    module_name: 'JobBrowserBFF',
-                    status: 'active',
-                    up: 1,
-                    // url: 'http://localhost:3000/dynserv/internal/JobBrowserBFF',
-                    url: 'http://localhost:5000/',
-                    version: '0.0.1',
-                    release_tags: ['dev'],
-                });
-            default:
-                throw new Error('Module not supported ' + module_name);
-            // // TODO: this should call the real service wizard.
-            // console.log('calling upstream...', module_name, version);
-            // const upstreamResult = await this.callUpstreamService(module_name, version);
-            // // throw new Error('Unsupported service module: ' + module_name);
-            // return upstreamResult;
+
+    async callUpstreamService(url: string, moduleName: string, version?: string): Promise<Results> {
+        const client = new GenericClient({
+            url,
+            token: this.token || undefined,
+            module: 'ServiceWizard',
+            timeout: this.timeout
+        });
+
+
+        const params: JSONObject = {
+            'module_name': moduleName
         }
+        if (typeof version !== 'undefined') {
+            params['version'] = version;
+        }
+    
+        try {
+            const [result] = await client.callMethod('get_service_status', [params]);
+            return [result] as unknown as Results;
+        } catch (ex) {
+            console.error('ERROR', ex.message);
+            return Promise.reject(ex);
+        }
+    }
+
+    async callFunc([{ module_name: moduleName, version }]: Params): Promise<Results> {
+        const fileName = (() => {
+            if (version) {
+                return `service_status_${moduleName}-${version}`;
+            } else {
+                return `service_status_${moduleName}`;
+            }
+        })();
+        const data = (await getJSON(
+            this.dataDir,
+            'ServiceWizard',
+            fileName
+        )) as unknown as ServiceStatus;
+        return [data];
+
+        //     throw new Error('Module not supported ' + module_name);
+        //     // // TODO: this should call the real service wizard.
+        //     // console.log('calling upstream...', module_name, version);
+        //     // const upstreamResult = await this.callUpstreamService(module_name, version);
+        //     // // throw new Error('Unsupported service module: ' + module_name);
+        //     // return upstreamResult;
+        // }
     }
 }

@@ -15,12 +15,14 @@ export default class UserProfileService extends ServiceWrapper {
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'status':
                 return new Status({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             default:
                 // TODO: find the actual workspace error message!

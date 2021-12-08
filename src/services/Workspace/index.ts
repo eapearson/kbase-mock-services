@@ -13,24 +13,28 @@ export default class WorkspaceService extends ServiceWrapper {
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_object_info3':
                 return new GetObjectInfo3({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'list_workspace_ids':
                 return new ListWorkspaceIDs({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'administer':
                 return new Administer({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             default:
                 // TODO: find the actual workspace error message!

@@ -19,36 +19,42 @@ export default class SampleService extends ServiceWrapper {
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_samples':
                 return new GetSamples({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_data_links_from_sample':
                 return new GetDataLinksFromSample({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_sample_acls':
                 return new GetSampleACLs({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_field_schemas':
                 return new GetFieldSchemas({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             case 'get_field_groups':
                 return new GetFieldGroups({
                     params,
                     token,
                     dataDir: this.dataDir,
+                    timeout: this.timeout
                 }).run();
             default:
                 // TODO: find the actual workspace error message!

@@ -6,6 +6,7 @@ export interface ModuleMethodInput {
     params: JSONValue;
     token: string | null;
     dataDir: string;
+    timeout: number;
 }
 
 export default abstract class ModuleMethod<ParamType, ResultType> {
@@ -17,11 +18,13 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
     inputParams: JSONArray;
     token: string | null;
     dataDir: string;
+    timeout: number;
     // static paramCount: number = 1;
-    constructor({ params, token, dataDir }: ModuleMethodInput) {
+    constructor({ params, token, dataDir, timeout }: ModuleMethodInput) {
         this.inputParams = this.ensureParams(params);
         this.token = token;
         this.dataDir = dataDir;
+        this.timeout = timeout;
 
         // const paramsSchema = (this.constructor as typeof ModuleMethod).paramsSchema;
         // const resultSchema = (this.constructor as typeof ModuleMethod).resultSchema;
