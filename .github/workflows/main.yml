@@ -10,7 +10,9 @@ on:
     branches:
       - main
   release:
-    types: [created]
+    branches:
+      - main
+    types: [published]
   workflow_dispatch:
 jobs:
     docker_build:
@@ -24,6 +26,26 @@ jobs:
               run: echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 
             - uses: FranzDiebold/github-env-vars-action@v2
+            
+            #
+            # Create friendly image tags
+            # Cases we handle:
+            # - push to "main" - name "main"
+            # - any activity in PR against "main" - name "pull_request-#""
+            # - release created - name "release", tag "release-v#.#.#""
+            #
+            - name: Create friendly tag for push to main
+              if: github.event_name == 'push'
+              run: echo IMAGE_TAG_NAME=main >> $GITHUB_ENV
+      
+            - name: Create friendly tag for pull request
+              if: github.event_name == 'pull_request'
+              run: echo IMAGE_TAG_NAME=pull_request-${{github.event.pull_request.number}} >> $GITHUB_ENV
+      
+            - name: Create friendly tag for a release against main
+              if: github.event_name == 'release'
+              run: |
+                echo IMAGE_TAG_NAME=release-${{ github.event.release.tag_name }} >> $GITHUB_ENV
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v1
@@ -47,4 +69,4 @@ jobs:
                       VCS_REF=${{ github.sha }}
                       BRANCH=${{ github.ref }}
                       TAG=${{ github.ref }}
-                  tags: ghcr.io/${{ github.repository_owner }}/kbase-mock-services:${{ env.CI_REF_NAME_SLUG }}
+                  tags: ghcr.io/${{ github.repository_owner }}/kbase-mock-services:${{ env.IMAGE_TAG_NAME }}
