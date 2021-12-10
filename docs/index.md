@@ -10,7 +10,7 @@ It is a real web server.
 
 It supports all KBase api styles - JSON-RPC 1.1, JSON-RPC 2.0, REST.
 
-It is statically typed.
+It is statically typed; implemented in Typescript, running with the Deno runtime.
 
 It has optional jsonschema validation.
 
@@ -18,35 +18,34 @@ This ensures your mock data is pretty much in correct form.
 
 Either handcraft data, or install data from an environment, e.g. CI.
 
-Entity style operations (get-x, get-xs, create-x, update-x, delete-x) should be supportable automatically.
+CRUD style operations (get-x, get-xs, create-x, update-x, delete-x) are easily supported; with limits.
 
-Search or more advanced operations which support a db may require custom code, or usage of a local database like sqlite.
-
+Search or more advanced operations which support a db may require more complex code, and possibly usage of a local database like sqlite.
 
 ## Quick Start
 
 Start the server:
 
 ```shell
-deno run --unstable --allow-net --allow-read  --import-map import_map.json src/index.ts --data-dir out
+deno run --unstable --allow-net --allow-read  --import-map import_map.json --watch src/index.ts --port 4444 --data-dir /some/dir
 ```
 
-Talk to supported services at 
+Talk to supported services at:
 
 ```text
-http://localhost:3333
+http://localhost:4444
 ```
 
 E.g. 
 
 ```shell
-http://localhost:3333/services/sampleservice
+http://localhost:4444/services/sampleservice
 ```
 
 And a full request:
 
 ```shell
-curl -X POST http://localhost:3333/services/sampleservice \
+curl -X POST http://localhost:4444/services/sampleservice \
     -H 'Authorization: MYTOKEN' \
     -H 'Content-Type: application/json' \
     -d '{
@@ -58,6 +57,3 @@ curl -X POST http://localhost:3333/services/sampleservice \
 }]
 }'
 ```
-
-
-deno run --unstable --allow-net --allow-read  --import-map import_map.json src/index.ts --data-dir `pwd`/out
