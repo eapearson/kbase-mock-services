@@ -102,7 +102,7 @@ The reasons to use the result rather than the entire response objects:
 
 ## Management
 
-Generated data must not be checked into the repo.
+Generated data must not be checked into the repo. An exception is perhaps to maintain one or more example data sets.
 
 Rather, if you wish to be able to incorporate a specific case of test data in to repo, check in a ... ??
 
