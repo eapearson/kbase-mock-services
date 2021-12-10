@@ -64,7 +64,7 @@ jobs:
             #
             - name: Create friendly tag for push to a triggering branch (main, feature-*, fix-*)
               if: github.event_name == 'push'
-              run: echo IMAGE_TAG_NAME=main >> $GITHUB_ENV
+              run: echo IMAGE_TAG_NAME=${{ env.CI_REF_NAME_SLUG }} >> $GITHUB_ENV
       
             - name: Create friendly tag for pull request
               if: github.event_name == 'pull_request'
