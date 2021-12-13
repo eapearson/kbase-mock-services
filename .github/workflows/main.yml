@@ -59,6 +59,13 @@ jobs:
       - name: Run Unit Tests
         run: sh scripts/automation/run-tests.sh
 
+      - name: Cheap Coverage Report
+        uses: devmasx/coverage-check-action@v1.2.0
+        with:
+          type: lcov
+          result_path: testing_output/cov_profile.lcov
+          min_coverage: 10
+          token: ${{ github.token }}
 
       #
       # Create friendly image tags
