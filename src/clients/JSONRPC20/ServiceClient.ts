@@ -1,4 +1,4 @@
-import { JSONValue } from '../../json.ts';
+import { JSONValue } from '../../lib/json.ts';
 import {JSONRPCClient, JSONRPCParams} from './JSONRPC20.ts';
 
 export interface ServiceClientParams {

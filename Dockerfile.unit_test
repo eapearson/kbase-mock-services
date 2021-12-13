@@ -1,0 +1,24 @@
+FROM denoland/deno:ubuntu-1.16.4
+
+LABEL org.opencontainers.image.source=https://github.com/eapearson/kbase-mock-services
+
+RUN apt-get update && apt-get -y install lcov
+
+#RUN apk upgrade --update-cache --available && \
+#    apk add --update --no-cache lcov
+
+# see https://hub.docker.com/r/denoland/deno
+
+EXPOSE 3333
+
+WORKDIR /app
+
+USER deno
+
+COPY . .
+
+RUN deno cache --unstable src/index.ts
+
+ENTRYPOINT ["sh"]
+
+CMD ["scripts/run-unit-tests.sh"]

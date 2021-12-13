@@ -1,5 +1,5 @@
-import { JSONObject, JSONArray, JSONValue } from '../../types/json.ts';
-import { JSONRPC2Exception } from './types.ts';
+import {JSONArray, JSONObject, JSONValue} from '../../lib/json.ts';
+import {JSONRPC2Exception} from './types.ts';
 import AJV from 'ajv';
 
 export interface ModuleMethodInput {
@@ -18,7 +18,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
     inputParams: MethodParams;
     token?: string;
 
-    constructor({ params, token }: ModuleMethodInput) {
+    constructor({params, token}: ModuleMethodInput) {
         this.inputParams = params;
         this.token = token;
 
@@ -48,11 +48,10 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             message: `Invalid params - missing param ${paramName}`,
             code: -32602,
             name: 'JSONRPCError',
-            data: {
-
-            }
+            data: {}
         });
     }
+
     errorInvalidParamCount(countShouldBe: number, countIs: number) {
         return new JSONRPC2Exception({
             message: `Invalid param count, should be ${countShouldBe}, but is ${countIs}`,
@@ -60,6 +59,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             name: 'JSONRPCError'
         });
     }
+
     errorWrongParamType(name: string, expectedType: string, actualType: string) {
         return new JSONRPC2Exception({
             message: `Invalid param type, ${name} should be ${expectedType}, but is ${actualType}`,
@@ -67,6 +67,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             name: 'JSONRPCError'
         });
     }
+
     errorInternal(message: string) {
         return new JSONRPC2Exception({
             message: `Internal Error`,
@@ -77,6 +78,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             }
         });
     }
+
     errorMethodNotFound() {
         return new JSONRPC2Exception({
             message: `Method Not Found`,
@@ -84,6 +86,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             name: 'JSONRPCError'
         });
     }
+
     // checkParamCount(expectedCount: number) {
     //     if (this.inputParams.length !== expectedCount) {
     //         throw new JSONRPC2Exception({
@@ -100,6 +103,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             name: 'JSONRPCError'
         });
     }
+
     ensureObject(possibleObject: JSONValue): JSONObject {
         if (typeof possibleObject !== 'object') {
             throw new JSONRPC2Exception({

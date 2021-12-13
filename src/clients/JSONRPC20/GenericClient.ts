@@ -1,4 +1,4 @@
-import {JSONValue} from '../../json.ts';
+import {JSONValue} from '../../lib/json.ts';
 import {ServiceClient, ServiceClientParams} from './ServiceClient.ts';
 import {JSONRPCParams} from "./JSONRPC20.ts";
 

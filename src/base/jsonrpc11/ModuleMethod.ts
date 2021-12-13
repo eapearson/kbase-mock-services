@@ -1,5 +1,6 @@
-import { JSONObject, JSONArray, JSONValue } from '/json.ts';
-import { JSONRPC11Exception } from './types.ts';
+import {JSONArray, JSONObject, JSONValue} from '../../lib/json.ts';
+import {JSONRPC11Exception} from './types.ts';
+
 // import AJV from 'ajv';
 
 export interface ModuleMethodInput {
@@ -19,8 +20,9 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
     token: string | null;
     dataDir: string;
     timeout: number;
+
     // static paramCount: number = 1;
-    constructor({ params, token, dataDir, timeout }: ModuleMethodInput) {
+    constructor({params, token, dataDir, timeout}: ModuleMethodInput) {
         this.inputParams = this.ensureParams(params);
         this.token = token;
         this.dataDir = dataDir;
@@ -53,6 +55,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     errorInvalidParamCount(countShouldBe: number, countIs: number) {
         return new JSONRPC11Exception({
             message: `Invalid param count, should be ${countShouldBe}, but is ${countIs}`,
@@ -61,6 +64,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     errorWrongParamType(name: string, expectedType: string, actualType: string) {
         return new JSONRPC11Exception({
             message: `Invalid param type, ${name} should be ${expectedType}, but is ${actualType}`,
@@ -69,6 +73,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     errorInternal() {
         return new JSONRPC11Exception({
             message: `Internal Error`,
@@ -77,6 +82,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     errorMethodNotFound() {
         return new JSONRPC11Exception({
             message: `Method Not Found`,
@@ -85,6 +91,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     checkParamCount(expectedCount: number) {
         if (this.inputParams.length !== expectedCount) {
             throw new JSONRPC11Exception({
@@ -95,6 +102,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             });
         }
     }
+
     errorParamsNotArray(actualType: string) {
         return new JSONRPC11Exception({
             message: `Invalid params - should be Array, but is not (${actualType})`,
@@ -103,6 +111,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
             error: null
         });
     }
+
     ensureObject(possibleObject: any): JSONObject {
         if (typeof possibleObject !== 'object') {
             throw new JSONRPC11Exception({
@@ -122,6 +131,7 @@ export default abstract class ModuleMethod<ParamType, ResultType> {
         }
         return possibleObject;
     }
+
     protected abstract validateParams(possibleParams: JSONArray): ParamType;
 
     private ensureParams(rawParams: JSONValue): JSONArray {

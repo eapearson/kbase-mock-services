@@ -1,6 +1,6 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { UserProfile } from '../../types/UserProfile.ts';
-import { getJSON } from '/lib/utils.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {UserProfile} from '../../types/UserProfile.ts';
+import {getJSON} from '../../../../lib/utils.ts';
 
 export declare type GetUserProfileParam = Array<string>;
 export declare type GetUserProfileResult = Array<UserProfile>;

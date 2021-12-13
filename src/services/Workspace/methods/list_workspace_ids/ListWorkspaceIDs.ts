@@ -1,8 +1,8 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import {JSONObject} from "/json.ts";
-import {getJSON} from "/lib/utils.ts";
+import ModuleMethod from "../../../../base/jsonrpc11/ModuleMethod.ts";
+import {JSONObject} from "../../../../lib/json.ts";
+import {getJSON} from "../../../../lib/utils.ts";
 
-export type Tokens = {[key: string]: string}
+export type Tokens = { [key: string]: string }
 
 export interface ListWorkspaceIDsParam extends JSONObject {
     perm: string;
@@ -17,7 +17,7 @@ export interface ListWorkspaceIDsResult extends JSONObject {
     pub: Array<number>;
 }
 
-export type ListWorkspaceIDsResults= [ListWorkspaceIDsResult];
+export type ListWorkspaceIDsResults = [ListWorkspaceIDsResult];
 
 export class ListWorkspaceIDs extends ModuleMethod<ListWorkspaceIDsParams, ListWorkspaceIDsResults> {
     validateParams(possibleParams: Array<any>): ListWorkspaceIDsParams {
@@ -33,7 +33,8 @@ export class ListWorkspaceIDs extends ModuleMethod<ListWorkspaceIDsParams, ListW
             const username = tokens[this.token];
             if (!username) {
                 return null;
-            } return username;
+            }
+            return username;
         })();
         let fileName: string;
         if (username === null) {
@@ -41,8 +42,8 @@ export class ListWorkspaceIDs extends ModuleMethod<ListWorkspaceIDsParams, ListW
         } else {
             fileName = `list_workspace_ids-user-${username}`;
         }
-         
-        
+
+
         const result = (await getJSON(this.dataDir, 'Workspace', fileName)) as unknown as ListWorkspaceIDsResult;
         return [result];
     }

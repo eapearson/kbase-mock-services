@@ -1,4 +1,4 @@
-import { JSONArray } from '../../json.ts';
+import { JSONArray } from '../../lib/json.ts';
 import { JSONRPCClient } from './JSONRPC11.ts';
 
 export interface ServiceClientParams {

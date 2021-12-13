@@ -1,7 +1,7 @@
 import {ServiceWizardClient, ServiceStatus} from '../coreServices/ServiceWizard.ts';
 import {ServiceClient, ServiceClientParams} from './ServiceClient.ts';
 import Cache from '../Cache.ts';
-import {JSONValue} from '../../json.ts';
+import {JSONValue} from '../../lib/json.ts';
 import {JSONRPCParams} from "./JSONRPC20.ts";
 
 const ITEM_LIFETIME = 1800000;

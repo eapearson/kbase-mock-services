@@ -1,14 +1,14 @@
-import { ServiceWrapper, HandleProps } from '/base/jsonrpc11/ServiceWrapper.ts';
-import { JSONRPC11Exception } from '/base/jsonrpc11/types.ts';
-import { GetSample } from './methods/get_sample/GetSample.ts';
-import { GetDataLinksFromSample } from './methods/get_data_links_from_sample/GetDataLinksFromSample.ts';
-import { GetSampleACLs } from './methods/get_sample_acls/GetSampleACLs.ts';
-import { GetFieldSchemas } from './methods/get_field_schemas/GetFieldSchemas.ts';
-import { GetFieldGroups } from './methods/get_field_groups/GetFieldGroups.ts';
-import { GetSamples } from './methods/get_samples/GetSamples.ts';
+import {HandleProps, ServiceWrapper} from '../../base/jsonrpc11/ServiceWrapper.ts';
+import {JSONRPC11Exception} from '../../base/jsonrpc11/types.ts';
+import {GetSample} from './methods/get_sample/GetSample.ts';
+import {GetDataLinksFromSample} from './methods/get_data_links_from_sample/GetDataLinksFromSample.ts';
+import {GetSampleACLs} from './methods/get_sample_acls/GetSampleACLs.ts';
+import {GetFieldSchemas} from './methods/get_field_schemas/GetFieldSchemas.ts';
+import {GetFieldGroups} from './methods/get_field_groups/GetFieldGroups.ts';
+import {GetSamples} from './methods/get_samples/GetSamples.ts';
 
 export default class SampleService extends ServiceWrapper {
-    handle({ method, params, token }: HandleProps): Promise<any> {
+    handle({method, params, token}: HandleProps): Promise<any> {
         switch (method) {
             // case 'status':
             //     return new Status({

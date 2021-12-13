@@ -1,8 +1,8 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import {JSONRPC11Exception} from "/base/jsonrpc11/types.ts";
-import {JSONObject} from "/json.ts";
+import ModuleMethod from "../../../../base/jsonrpc11/ModuleMethod.ts";
+import {JSONRPC11Exception} from "../../../../base/jsonrpc11/types.ts";
+import {JSONObject} from "../../../../lib/json.ts";
 import {ObjectInfo, ObjectSpecification} from "../common.ts";
-import {getJSON} from "/lib/utils.ts";
+import {getJSON} from "../../../../lib/utils.ts";
 
 
 export interface GetObjectInfo3Param {

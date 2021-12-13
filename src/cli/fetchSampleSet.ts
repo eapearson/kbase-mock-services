@@ -1,8 +1,8 @@
-import SampleServiceClient from "/clients/coreServices/SampleService/SampleServiceClient.ts";
-import WorkspaceClient, { ObjectSpecification } from "/clients/coreServices/Workspace.ts";
-import UserProfileClient from "/clients/coreServices/UserProfile.ts";
-import GetArgs from "/lib/args.ts";
-import { saveJSON } from "/lib/utils.ts";
+import SampleServiceClient from "../clients/coreServices/SampleService/SampleServiceClient.ts";
+import WorkspaceClient, {ObjectSpecification} from "../clients/coreServices/Workspace.ts";
+import UserProfileClient from "../clients/coreServices/UserProfile.ts";
+import GetArgs from "../lib/args.ts";
+import {saveJSON} from "../lib/utils.ts";
 
 interface ServiceDef {
     url: string;
@@ -26,18 +26,18 @@ interface FetchSampleArgs {
 
 class GetFetchSampleArgs extends GetArgs<FetchSampleArgs> {
     get(): FetchSampleArgs {
-        const ref = this.mustGet(this.args, 'ref');
+        const ref = this.mustGetString('ref');
         const [workspaceId, objectId, objectVersion] = ref.split('/').map(part => parseInt(part));
 
-        const env = this.getString(this.args, 'env', 'ci');
+        const env = this.getString('env', 'ci');
 
         return {
             sampleSetRef: {
                 workspaceId, objectId, objectVersion
             },
-            token: this.mustGet(this.args, 'token'),
-            destination: this.mustGet(this.args, 'dest'),
-            timeout: this.getInt(this.args, 'timeout', 5000),
+            token: this.mustGetString('token'),
+            destination: this.mustGetString('dest'),
+            timeout: this.getInt('timeout', 5000),
             services: {
                 SampleService: {
                     url: `https://${env}.kbase.us/services/sampleservice`
@@ -74,7 +74,7 @@ async function main() {
         token,
         timeout,
         destination
-    } = new GetFetchSampleArgs().get();
+    } = new GetFetchSampleArgs(Deno.args).get();
 
     const sampleServiceClient = new SampleServiceClient({
         url: SampleService.url,
@@ -91,7 +91,7 @@ async function main() {
     // Fetch sample set:
     const ref = [sampleSetRef.workspaceId, sampleSetRef.objectId, sampleSetRef.objectVersion].join('/');
     const sampleSetResult = await workspaceService.get_objects2({
-        objects: [{ ref }],
+        objects: [{ref}],
         ignoreErrors: 0,
         no_data: 0
     });
@@ -100,13 +100,13 @@ async function main() {
     saveJSON(destination, 'Workspace', `object_${objectSuffix}.json`, sampleSetResult.data[0]);
 
     // Get everything for each sample...
-    for (const { id: sampleId, version: sampleVersion } of sampleSet.samples) {
+    for (const {id: sampleId, version: sampleVersion} of sampleSet.samples) {
         // fetch requested sample
-        const sample = await sampleServiceClient.get_sample({ id: sampleId, version: sampleVersion });
+        const sample = await sampleServiceClient.get_sample({id: sampleId, version: sampleVersion});
         saveJSON(destination, 'SampleService', `sample_${sampleId}_${sampleVersion}.json`, sample);
 
         // fetch acl for sample
-        const sampleACL = await sampleServiceClient.get_sample_acls({ id: sampleId, as_admin: 0 });
+        const sampleACL = await sampleServiceClient.get_sample_acls({id: sampleId, as_admin: 0});
         saveJSON(destination, 'SampleService', `sample_acl_${sampleId}.json`, sampleACL);
 
         // fetch linked objects for sample
@@ -117,7 +117,7 @@ async function main() {
         saveJSON(destination, 'SampleService', `sample_data_link_${sampleId}_${sampleVersion}.json`, linkedObjects);
 
         // build set of linked objects
-        const refs: Array<ObjectSpecification> = linkedObjects.links.map(({ upa }) => {
+        const refs: Array<ObjectSpecification> = linkedObjects.links.map(({upa}) => {
             return {
                 ref: upa
             };

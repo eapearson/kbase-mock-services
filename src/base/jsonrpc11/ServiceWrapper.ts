@@ -1,4 +1,4 @@
-import { JSONArray } from "../../json.ts";
+import { JSONArray } from "../../lib/json.ts";
 
 export interface HandleProps {
     method: string;

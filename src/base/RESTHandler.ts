@@ -1,5 +1,5 @@
-import { JSONValue } from '/types/json.ts';
-import { Opine, Request, Response } from 'https://deno.land/x/opine@1.9.1/mod.ts';
+import {JSONValue} from '../lib/json.ts';
+import {Opine, Request, Response} from 'https://deno.land/x/opine@1.9.1/mod.ts';
 
 export interface RESTHandleProps {
     method: string;
@@ -15,9 +15,11 @@ export interface RESTHandlerParams {
 
 export abstract class RESTHandler {
     dataDir: string;
+
     constructor(params: RESTHandlerParams) {
         this.dataDir = params.dataDir;
     }
+
     abstract handle(props: RESTHandleProps): Promise<JSONValue>;
 }
 
@@ -31,6 +33,7 @@ export class AppError extends Error {
     errorMessage: string;
     errorCode: number;
     httpStatusMessage: string;
+
     constructor(errorMessage: string, errorCode: number, httpStatus: number, httpStatusMessage: string) {
         super(`${errorCode} ${errorMessage}`);
         this.errorMessage = errorMessage;
@@ -57,12 +60,13 @@ export default class RESTService {
     path: string | RegExp;
     module: string;
     handler: RESTHandler;
+
     constructor({
-        app,
-        path,
-        module,
-        handler,
-    }: {
+                    app,
+                    path,
+                    module,
+                    handler,
+                }: {
         app: Opine;
         path: string | RegExp;
         module: string;
@@ -111,15 +115,13 @@ export default class RESTService {
             // accept
             //
             // But realistically, just method and url.
-            const result = await this.handler.handle({
+            rpcResponse = await this.handler.handle({
                 method: request.method,
                 path,
                 query: request.query,
                 token,
                 body: request.body,
             });
-
-            rpcResponse = result;
             response.set('content-type', 'application/json');
             response.send(JSON.stringify(rpcResponse));
         } catch (ex) {
@@ -156,6 +158,7 @@ export default class RESTService {
             }
         }
     }
+
     start() {
         this.app.route(this.path).all(this.handle.bind(this));
     }

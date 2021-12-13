@@ -1,5 +1,5 @@
-import { JSONObject } from '../../json.ts';
-import { ServiceClient } from '../JSONRPC11/ServiceClient.ts';
+import {JSONObject} from '../../lib/json.ts';
+import {ServiceClient} from '../JSONRPC11/ServiceClient.ts';
 
 // types from module
 
@@ -54,7 +54,7 @@ function isArray(x: any, p: string, subType: string): boolean {
 }
 
 function isGetServiceStatusResult(x: any): x is GetServiceStatusResult {
-    if (
+    return (
         isString(x, 'module_name') &&
         isString(x, 'version') &&
         isString(x, 'git_commit_hash') &&
@@ -63,10 +63,7 @@ function isGetServiceStatusResult(x: any): x is GetServiceStatusResult {
         isNumber(x, 'up') &&
         isString(x, 'status') &&
         isString(x, 'health')
-    ) {
-        return true;
-    }
-    return false;
+    );
 }
 
 // impl
@@ -74,6 +71,7 @@ function isGetServiceStatusResult(x: any): x is GetServiceStatusResult {
 /**
  * Params structure for client constructor
  */
+
 // export interface ServiceWizardClientParams extends JSONRPCClientParams { }
 
 /**
