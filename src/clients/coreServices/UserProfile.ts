@@ -1,4 +1,4 @@
-import {JSONArrayOf, JSONObject, JSONObjectOf} from '../../json.ts';
+import {JSONArrayOf, JSONObject, JSONObjectOf} from '../../lib/json.ts';
 import { ServiceClient } from '../JSONRPC11/ServiceClient.ts';
 
 export interface User extends JSONObject {

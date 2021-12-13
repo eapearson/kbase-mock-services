@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue, JSONArray} from '../../json.ts';
+import { JSONObject, JSONValue, JSONArray} from '../../lib/json.ts';
 
 export interface JSONRPCRequestOptions {
     func: string,

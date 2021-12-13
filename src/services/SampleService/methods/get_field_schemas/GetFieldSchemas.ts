@@ -1,6 +1,6 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { ControlledField } from '../../types/ControlledField.ts';
-import { getJSON } from '../../../../lib/utils.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {ControlledField} from '../../types/ControlledField.ts';
+import {getJSON} from '../../../../lib/utils.ts';
 
 export interface GetFieldSchemasParam {
     keys: Array<string> | null;
@@ -17,6 +17,7 @@ export type GetFieldSchemasResults = [GetFieldSchemasResult];
 export class GetFieldSchemas extends ModuleMethod<GetFieldSchemasParams, GetFieldSchemasResults> {
     schemasList: Array<ControlledField> | null = null;
     schemasDb: Map<string, ControlledField> | null = null;
+
     validateParams(possibleParams: Array<any>): GetFieldSchemasParams {
         if (possibleParams.length !== 1) {
             throw new Error(`Expected one positional parameter, received ${possibleParams.length}`);
@@ -52,9 +53,9 @@ export class GetFieldSchemas extends ModuleMethod<GetFieldSchemasParams, GetFiel
         const [schemasList, schemasDb] = await this.ensureSchemas();
         if (params[0].keys === null) {
             if (this.schemasList === null) {
-                return [{ fields: [] }];
+                return [{fields: []}];
             }
-            return [{ fields: schemasList }];
+            return [{fields: schemasList}];
         }
         const fields = await Promise.all(
             params[0].keys.map<ControlledField>((key) => {
@@ -66,6 +67,6 @@ export class GetFieldSchemas extends ModuleMethod<GetFieldSchemasParams, GetFiel
             })
         );
 
-        return [{ fields }];
+        return [{fields}];
     }
 }

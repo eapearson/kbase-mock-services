@@ -1,11 +1,10 @@
-import { EpochTimeMS, Sample, SampleId, SampleNodeId, SampleVersion, SDKBoolean, Username, WSUPA } from './Sample.ts';
-import { ControlledField } from './ControlledField.ts';
+import {EpochTimeMS, Sample, SampleId, SampleNodeId, SampleVersion, SDKBoolean, Username, WSUPA} from './Sample.ts';
+import {ControlledField} from './ControlledField.ts';
 import * as path from 'https://deno.land/std@0.114.0/path/mod.ts';
+import {JSONObject, toJSONObject} from '../../../lib/json.ts';
+import {ServiceClient, ServiceClientParams} from '../../JSONRPC11/ServiceClient.ts';
 
 const __dirname = path.dirname(path.fromFileUrl(import.meta.url));
-
-import { JSONObject, objectToJSONObject } from '../../../json.ts';
-import { ServiceClient, ServiceClientParams } from '../../JSONRPC11/ServiceClient.ts';
 
 const groupsData = JSON.parse(await Deno.readTextFile(`${__dirname}/data/groups.json`));
 const schemasData = JSON.parse(await Deno.readTextFile(`${__dirname}/data/schemas.json`));
@@ -121,7 +120,8 @@ export interface GetFieldSchemasResult {
     fields: Array<ControlledField>;
 }
 
-export interface GetFieldGroupsParams {}
+export interface GetFieldGroupsParams {
+}
 
 export interface GetFieldGroupsResult extends JSONObject {
     groups: FieldGroups;
@@ -142,14 +142,14 @@ export default class SampleServiceClient extends ServiceClient {
     async get_sample(params: GetSampleParams): Promise<GetSampleResult> {
         // TODO: revive the effort to provide result verification and type coercion.
         const [result] = (await this.callFunc<[JSONObject], [JSONObject]>('get_sample', [
-            objectToJSONObject(params),
+            toJSONObject(params),
         ])) as unknown as Array<GetSampleResult>;
         return result;
     }
 
     async get_data_links_from_sample(params: GetDataLinksFromSampleParams): Promise<GetDataLinksFromSampleResult> {
         const [result] = await this.callFunc<[JSONObject], [JSONObject]>('get_data_links_from_sample', [
-            objectToJSONObject(params),
+            toJSONObject(params),
         ]);
         return result as unknown as GetDataLinksFromSampleResult;
     }

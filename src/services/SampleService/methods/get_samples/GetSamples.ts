@@ -1,7 +1,7 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { SDKBoolean } from '/services/common.ts';
-import { getFiles, getJSON } from '/lib/utils.ts';
-import { Sample, SampleId, SampleVersion } from '../../types/Sample.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {SDKBoolean} from '../../../common.ts';
+import {getFiles, getJSON} from '../../../../lib/utils.ts';
+import {Sample, SampleId, SampleVersion} from '../../types/Sample.ts';
 
 export interface SampleIdentifier {
     id: SampleId;
@@ -47,7 +47,7 @@ export class GetSamples extends ModuleMethod<GetSamplesParams, GetSamplesResults
 
     async callFunc(params: GetSamplesParams): Promise<GetSamplesResults> {
         const data = await Promise.all(
-            params[0].samples.map(async ({ id, version }) => {
+            params[0].samples.map(async ({id, version}) => {
                 const sampleVersion = (() => {
                     if (typeof version === 'undefined') {
                         // Find most recent version of the sample.

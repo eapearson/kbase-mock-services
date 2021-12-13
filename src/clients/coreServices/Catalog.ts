@@ -1,5 +1,5 @@
-import { JSONArrayOf, JSONObject, objectToJSONObject } from '../../json.ts';
-import { ServiceClient } from '../JSONRPC11/ServiceClient.ts';
+import {JSONArrayOf, JSONObject, toJSONObject} from '../../lib/json.ts';
+import {ServiceClient} from '../JSONRPC11/ServiceClient.ts';
 
 // interface IsAdminParam {
 //     username?: string;
@@ -43,7 +43,6 @@ interface GetExecAggrStatsResult extends JSONObject {
 // }
 
 
-
 export default class CatalogClient extends ServiceClient {
     module: string = 'Catalog';
 
@@ -57,10 +56,10 @@ export default class CatalogClient extends ServiceClient {
     }
 
     async get_exec_aggr_table(param: GetExecAggrTableParam): Promise<Array<GetExecAggrTableResult>> {
-        return await this.callFunc<JSONArrayOf<JSONObject>, JSONArrayOf<GetExecAggrTableResult>>('get_exec_aggr_table', [objectToJSONObject(param)]);
+        return await this.callFunc<JSONArrayOf<JSONObject>, JSONArrayOf<GetExecAggrTableResult>>('get_exec_aggr_table', [toJSONObject(param)]);
     }
 
     async get_exec_aggr_stats(param: GetExecAggrStatsParam): Promise<Array<GetExecAggrStatsResult>> {
-        return await this.callFunc<JSONArrayOf<JSONObject>, JSONArrayOf<GetExecAggrStatsResult>>('get_exec_aggr_stats', [objectToJSONObject(param)]);
+        return await this.callFunc<JSONArrayOf<JSONObject>, JSONArrayOf<GetExecAggrStatsResult>>('get_exec_aggr_stats', [toJSONObject(param)]);
     }
 }

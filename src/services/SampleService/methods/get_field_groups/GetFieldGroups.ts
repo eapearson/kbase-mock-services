@@ -1,6 +1,6 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { FieldGroups } from '../../types/FieldGroups.ts';
-import { getJSON } from '../../../../lib/utils.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {FieldGroups} from '../../types/FieldGroups.ts';
+import {getJSON} from '../../../../lib/utils.ts';
 
 export interface GetFieldGroupsResult {
     groups: FieldGroups;
@@ -19,6 +19,7 @@ export type GetFieldGroupsResults = [GetFieldGroupsResult];
 
 export class GetFieldGroups extends ModuleMethod<GetFieldGroupsParams, GetFieldGroupsResults> {
     groups: FieldGroups | null = null;
+
     validateParams(possibleParams: Array<any>): GetFieldGroupsParams {
         return possibleParams as unknown as GetFieldGroupsParams;
     }
@@ -33,6 +34,6 @@ export class GetFieldGroups extends ModuleMethod<GetFieldGroupsParams, GetFieldG
     async callFunc(params: GetFieldGroupsParams): Promise<GetFieldGroupsResults> {
         const groups = (await this.getGroups()) as unknown as FieldGroups;
 
-        return [{ groups }];
+        return [{groups}];
     }
 }

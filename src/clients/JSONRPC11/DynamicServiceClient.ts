@@ -1,7 +1,7 @@
-import { ServiceWizardClient, ServiceStatus } from '../coreServices/ServiceWizard.ts';
-import { ServiceClient, ServiceClientParams } from './ServiceClient.ts';
+import {ServiceStatus, ServiceWizardClient} from '../coreServices/ServiceWizard.ts';
+import {ServiceClient, ServiceClientParams} from './ServiceClient.ts';
 import Cache from '../Cache.ts';
-import { JSONArray } from '../../json.ts';
+import {JSONArray} from '../../lib/json.ts';
 
 const ITEM_LIFETIME = 1800000;
 const MONITORING_FREQUENCY = 60000;
@@ -51,7 +51,7 @@ export abstract class DynamicServiceClient extends ServiceClient {
 
     constructor(params: DynamicServiceClientParams) {
         super(params);
-        const { version } = params;
+        const {version} = params;
 
 
         this.version = version || null;
@@ -95,11 +95,10 @@ export abstract class DynamicServiceClient extends ServiceClient {
                 });
                 // NB wrapped in promise.resolve because the promise we have
                 // here is bluebird, which supports cancellation, which we need.
-                const status = await client.get_service_status({
+                return await client.get_service_status({
                     module_name: this.module,
                     version: this.version
                 });
-                return status;
             }
         );
         this.module = moduleInfo.module_name;
@@ -124,6 +123,7 @@ export abstract class DynamicServiceClient extends ServiceClient {
         await this.lookupModule();
         return super.callFunc(funcName, params);
     }
+
     async callFuncEmptyResult<ParamType extends JSONArray>(funcName: string, params: ParamType): Promise<void> {
         await this.lookupModule();
         return super.callFuncEmptyResult(funcName, params);

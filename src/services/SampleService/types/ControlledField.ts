@@ -3,7 +3,7 @@
 // we can piggyback on??
 
 
-import {JSONValue} from "../../../types/json.ts";
+import {JSONValue} from "../../../lib/json.ts";
 
 export type JSONSchemaFieldType =
     'string' |

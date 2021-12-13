@@ -1,6 +1,6 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import { JSONRPC11Exception } from "/base/jsonrpc11/types.ts";
-import { isJSONArray, JSONArrayOf, JSONObject } from "/types/json.ts";
+import ModuleMethod from "../../../../base/jsonrpc11/ModuleMethod.ts";
+import {JSONRPC11Exception} from "../../../../base/jsonrpc11/types.ts";
+import {isJSONArray, JSONArrayOf, JSONObject} from "../../../../lib/json.ts";
 
 const cwd = new URL('.', import.meta.url).pathname;
 const resultData = JSON.parse(await Deno.readTextFile(`${cwd}data/status.json`));

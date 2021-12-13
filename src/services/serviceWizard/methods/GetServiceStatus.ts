@@ -1,9 +1,9 @@
-import ModuleMethod, { ModuleMethodInput } from '../../../base/jsonrpc11/ModuleMethod.ts';
+import ModuleMethod, {ModuleMethodInput} from '../../../base/jsonrpc11/ModuleMethod.ts';
 import GenericClient from "../../../clients/JSONRPC11/GenericClient.ts";
-import { getJSON } from "../../../lib/utils.ts";
-import { JSONArray, JSONArrayOf, JSONObject } from '../../../types/json.ts';
+import {getJSON} from "../../../lib/utils.ts";
+import {JSONArray, JSONObject} from '../../../lib/json.ts';
 
-export interface Param  {
+export interface Param {
     'module_name': string;
     version?: string;
 }
@@ -53,8 +53,7 @@ export class GetServiceStatus extends ModuleMethod<Params, Results> {
         };
 
         if ('version' in params) {
-            const version = this.validateStringParam(params, 'version');
-            result.version = version;
+            result.version = this.validateStringParam(params, 'version');
         }
 
         return [result];
@@ -75,7 +74,7 @@ export class GetServiceStatus extends ModuleMethod<Params, Results> {
         if (typeof version !== 'undefined') {
             params['version'] = version;
         }
-    
+
         try {
             const [result] = await client.callMethod('get_service_status', [params]);
             return [result] as unknown as Results;
@@ -85,7 +84,7 @@ export class GetServiceStatus extends ModuleMethod<Params, Results> {
         }
     }
 
-    async callFunc([{ module_name: moduleName, version }]: Params): Promise<Results> {
+    async callFunc([{module_name: moduleName, version}]: Params): Promise<Results> {
         const fileName = (() => {
             if (version) {
                 return `service_status_${moduleName}-${version}`;
