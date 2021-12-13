@@ -2,6 +2,7 @@ FROM denoland/deno:ubuntu-1.16.4
 
 LABEL org.opencontainers.image.source=https://github.com/eapearson/kbase-mock-services
 
+# lcov doesn't install unless update is run first.
 RUN apt-get update && apt-get -y install lcov
 
 #RUN apk upgrade --update-cache --available && \
