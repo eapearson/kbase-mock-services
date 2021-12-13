@@ -14,7 +14,7 @@ EXPOSE 3333
 
 WORKDIR /app
 
-RUN mkdir /app/testing_output && chown deno /app/testing_output && chmod a+rwx /app/testing_output
+# RUN mkdir /app/testing_output && chown deno:deno /app/testing_output && chmod a+rwx /app/testing_output
 
 USER deno
 
