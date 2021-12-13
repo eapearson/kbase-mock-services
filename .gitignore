@@ -3,7 +3,7 @@ node_modules
 build
 _temp
 cov_profile/
-/testing/
+/testing_output/
 
 # IDEs
 .idea/
