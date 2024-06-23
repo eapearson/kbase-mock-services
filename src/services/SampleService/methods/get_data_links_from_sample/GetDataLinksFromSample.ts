@@ -1,8 +1,8 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { JSONObject, JSONValue } from '/types/json.ts';
-import { Username, WSUPA, EpochTimeMS } from '/services/common.ts';
-import { getJSON } from '/lib/utils.ts';
-import { SampleId, SampleVersion, SampleNodeId } from '../../types/Sample.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {JSONObject, JSONValue} from '../../../../lib/json.ts';
+import {EpochTimeMS, Username, WSUPA} from '../../../common.ts';
+import {getJSON} from '../../../../lib/utils.ts';
+import {SampleId, SampleNodeId, SampleVersion} from '../../types/Sample.ts';
 
 export interface GetDataLinksFromSampleParam {
     id: SampleId;

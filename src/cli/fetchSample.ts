@@ -1,6 +1,6 @@
-import { anyToJSONValue } from "../json.ts";
+import {toJSONValue} from "../lib/json.ts";
 import SampleServiceClient from "../clients/coreServices/SampleService/SampleServiceClient.ts";
-import WorkspaceClient, { ObjectSpecification } from "../clients/coreServices/Workspace.ts";
+import WorkspaceClient, {ObjectSpecification} from "../clients/coreServices/Workspace.ts";
 import UserProfileClient from "../clients/coreServices/UserProfile.ts";
 
 function getArgs() {
@@ -24,12 +24,12 @@ function getArgs() {
     };
 }
 
-function output(obj: any) {
-    console.log(JSON.stringify(anyToJSONValue(obj), null, 4));
-}
+// function output(obj: any) {
+//     console.log(JSON.stringify(toJSONValue(obj), null, 4));
+// }
 
 function save(dest: string, name: string, obj: any) {
-    const output = JSON.stringify(anyToJSONValue(obj), null, 4);
+    const output = JSON.stringify(toJSONValue(obj), null, 4);
     Deno.writeTextFile(`${dest}/${name}`, output);
 }
 
@@ -51,15 +51,15 @@ async function main() {
         token,
         timeout
     });
-    const sample = await sampleServiceClient.get_sample({ id: sampleId, version: sampleVersion });
+    const sample = await sampleServiceClient.get_sample({id: sampleId, version: sampleVersion});
     save(destination, `sample_${sampleId}_${sampleVersion}.json`, sample);
 
     // fetch acl for sample
-    const sampleACL = await sampleServiceClient.get_sample_acls({ id: sampleId, as_admin: 0 });
+    const sampleACL = await sampleServiceClient.get_sample_acls({id: sampleId, as_admin: 0});
     save(destination, `sample_acl_${sampleId}.json`, sampleACL);
 
     // fetch linked objects for sample
-    const linkedObjects = await sampleServiceClient.get_data_links_from_sample({ id: sampleId, version: sampleVersion });
+    const linkedObjects = await sampleServiceClient.get_data_links_from_sample({id: sampleId, version: sampleVersion});
     save(destination, `sample_data_link_${sampleId}_${sampleVersion}.json`, linkedObjects);
 
     // build set of linked objects
@@ -68,7 +68,7 @@ async function main() {
         token,
         timeout
     });
-    const refs: Array<ObjectSpecification> = linkedObjects.links.map(({ upa }) => {
+    const refs: Array<ObjectSpecification> = linkedObjects.links.map(({upa}) => {
         return {
             ref: upa
         };

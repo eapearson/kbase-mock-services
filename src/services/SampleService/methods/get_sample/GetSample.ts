@@ -1,7 +1,7 @@
-import ModuleMethod from "/base/jsonrpc11/ModuleMethod.ts";
-import { SDKBoolean } from "/services/common.ts";
-import { getJSON } from "/lib/utils.ts";
-import { Sample, SampleId } from "../../types/Sample.ts";
+import ModuleMethod from "../../../../base/jsonrpc11/ModuleMethod.ts";
+import {SDKBoolean} from "../../../common.ts";
+import {getJSON} from "../../../../lib/utils.ts";
+import {Sample, SampleId} from "../../types/Sample.ts";
 
 export interface GetSampleParam {
     id: SampleId;

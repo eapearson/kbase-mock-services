@@ -1,4 +1,4 @@
-import {JSONObject} from "../../../types/json.ts";
+import {JSONObject} from "../../../lib/json.ts";
 
 export interface User extends JSONObject {
     username: string;

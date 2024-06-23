@@ -1,9 +1,9 @@
-import { JSONValue } from "/types/json.ts";
-import { Opine, Request, Response } from "https://deno.land/x/opine@1.9.1/mod.ts";
-import { readAll } from "https://deno.land/std@0.114.0/io/util.ts";
+import {JSONValue} from "../../lib/json.ts";
+import {Opine, Request, Response} from "https://deno.land/x/opine@1.9.1/mod.ts";
+import {readAll} from "https://deno.land/std@0.114.0/io/util.ts";
 
-import { ServiceWrapper } from "./ServiceWrapper.ts";
-import { JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response, JSONRPC11Error } from "./types.ts";
+import {ServiceWrapper} from "./ServiceWrapper.ts";
+import {JSONRPC11Error, JSONRPC11Exception, JSONRPC11Request, JSONRPC11Response} from "./types.ts";
 
 export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
     app: Opine;
@@ -13,12 +13,14 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
     path: string;
     module: string;
     handler: HandlerClass;
-    constructor({ app, path, module, handler }: { app: Opine, path: string, module: string, handler: HandlerClass; }) {
+
+    constructor({app, path, module, handler}: { app: Opine, path: string, module: string, handler: HandlerClass; }) {
         this.app = app;
         this.path = path;
         this.module = module;
         this.handler = handler;
     }
+
     errorEmptyBody() {
         return new JSONRPC11Exception({
             code: -32600,
@@ -27,6 +29,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: 'No data received - possibly wrong content type. Best is application/json, but text/plain is fine too.'
         });
     }
+
     errorEmptyID() {
         return new JSONRPC11Exception({
             code: -32600,
@@ -35,6 +38,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: ''
         });
     }
+
     errorIdWrongType(type: string) {
         return new JSONRPC11Exception({
             code: -32601,
@@ -43,6 +47,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: null
         });
     }
+
     errorEmptyVersion() {
         return new JSONRPC11Exception({
             code: -32600,
@@ -50,6 +55,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             message: 'Invalid request - missing version'
         });
     }
+
     errorWrongVersion(badVersion: string | null) {
         return new JSONRPC11Exception({
             code: -32600,
@@ -60,6 +66,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             }
         });
     }
+
     errorInvalidVersion(badVersion: JSONValue) {
         return new JSONRPC11Exception({
             code: -32600,
@@ -70,6 +77,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             }
         });
     }
+
     errorMethodMissing() {
         return new JSONRPC11Exception({
             code: -32601,
@@ -78,6 +86,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: null
         });
     }
+
     errorMethodWrongType(type: string) {
         return new JSONRPC11Exception({
             code: -32601,
@@ -86,6 +95,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: null
         });
     }
+
     errorParamsMissing() {
         return new JSONRPC11Exception({
             code: -32601,
@@ -94,6 +104,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: null
         });
     }
+
     errorParamsNotArray() {
         return new JSONRPC11Exception({
             code: -32700,
@@ -102,6 +113,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: 'some\nlong\nstack\trace'
         });
     }
+
     errorWrongModule(wrongMethod: string) {
         return new JSONRPC11Exception({
             code: -32601,
@@ -110,6 +122,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: 'some\nlong\nstack\trace'
         });
     }
+
     errorParse(message: string) {
         return new JSONRPC11Exception({
             code: -32600,
@@ -118,6 +131,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             error: message
         });
     }
+
     extractRequest(request: JSONValue): JSONRPC11Request {
         if (typeof request !== 'object' || request === null || 'pop' in request) {
             throw new JSONRPC11Exception({
@@ -183,6 +197,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             params: request.params
         };
     }
+
     async handle(request: Request, response: Response) {
         let rpcResponse: JSONRPC11Response;
 
@@ -205,7 +220,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
             //     }
             // })();
 
-             const requestBody = await (async () => {
+            const requestBody = await (async () => {
                 try {
                     const raw = await readAll(request.body);
                     const text = new TextDecoder().decode(raw);
@@ -215,7 +230,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
                 }
             })();
 
-            const { id, version, method, params } = this.extractRequest(requestBody);
+            const {id, version, method, params} = this.extractRequest(requestBody);
 
             this.id = id;
 
@@ -256,7 +271,6 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
                 // trace = null;
                 error = ex.toJSON();
             } else if (ex instanceof Error) {
-
                 const trace = (() => {
                     if (typeof ex.stack === 'undefined') {
                         return null;
@@ -290,6 +304,7 @@ export default class ServiceHandler<HandlerClass extends ServiceWrapper> {
         response.set('content-type', 'application/json');
         response.send(JSON.stringify(rpcResponse));
     }
+
     start() {
         this.app.route(this.path).post(this.handle.bind(this));
     }

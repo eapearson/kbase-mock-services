@@ -1,6 +1,6 @@
-import { getJSON } from '../../lib/utils.ts';
-import { RESTHandler, RESTHandleProps, NotFoundError, AppError } from '/base/RESTHandler.ts';
-import { JSONObject, JSONValue } from '/json.ts';
+import {getJSON} from '../../lib/utils.ts';
+import {AppError, NotFoundError, RESTHandleProps, RESTHandler} from '../../base/RESTHandler.ts';
+import {JSONObject, JSONValue} from '../../lib/json.ts';
 
 export interface RESTPathHandlerProps {
     dataDir: string;
@@ -16,14 +16,17 @@ export abstract class RESTPathHandler {
     query: { [key: string]: string };
     token: string | null;
     body: JSONValue;
-    constructor({ dataDir, path, query, token, body }: RESTPathHandlerProps) {
+
+    constructor({dataDir, path, query, token, body}: RESTPathHandlerProps) {
         this.dataDir = dataDir;
         this.path = path;
         this.query = query;
         this.token = token;
         this.body = body;
     }
+
     abstract run(): Promise<JSONValue>;
+
     requireToken() {
         if (this.token === null) {
             throw new AppError('No authentication token', 10010, 400, 'Bad Request');
@@ -32,6 +35,7 @@ export abstract class RESTPathHandler {
             throw new AppError('Invalid token', 10020, 401, 'Unauthorized');
         }
     }
+
     validateUsername(username: string) {
         if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(username)) {
             throw new AppError('Illegal user name', 30010, 400, 'Bad Request');
@@ -43,8 +47,7 @@ export class HandleGETMe extends RESTPathHandler {
     async run() {
         this.requireToken();
         const fileName = `me_${this.token}`;
-        const data = (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONValue;
-        return data;
+        return (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONValue;
     }
 }
 
@@ -60,8 +63,7 @@ export class HandleGETUsers extends RESTPathHandler {
             this.validateUsername(username);
             const filename = `user_${username}`;
             try {
-                const userDisplayName = await getJSON(this.dataDir, 'Auth', filename);
-                users[username] = userDisplayName;
+                users[username] = await getJSON(this.dataDir, 'Auth', filename);
             } catch (ex) {
                 // ignore
                 console.warn(`Ignoring missing user ${username}: ${ex.message}`);
@@ -88,26 +90,24 @@ export class HandleLegacyLogin extends RESTPathHandler {
         //     this.errorEmptyBody();
         // }
         const requestBody = this.body as JSONObject;
-        
+
         const token = requestBody['token']
         const fileName = `legacy_${token}`;
-        const data = (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONObject;
-        return data;
+        return (await getJSON(this.dataDir, 'Auth', fileName)) as unknown as JSONObject;
     }
 }
 
 
-
 export class AuthServiceHandler extends RESTHandler {
-    getHandler({ method, path, query, token, body }: RESTHandleProps): RESTPathHandler | null {
-       
+    getHandler({method, path, query, token, body}: RESTHandleProps): RESTPathHandler | null {
+
         switch (method) {
             case 'GET':
                 switch (path) {
                     case 'api/V2/me':
-                        return new HandleGETMe({ dataDir: this.dataDir, path, query, token, body });
+                        return new HandleGETMe({dataDir: this.dataDir, path, query, token, body});
                     case 'api/V2/users':
-                        return new HandleGETUsers({ dataDir: this.dataDir, path, query, token, body });
+                        return new HandleGETUsers({dataDir: this.dataDir, path, query, token, body});
                     default:
                         return null;
                 }
@@ -123,8 +123,8 @@ export class AuthServiceHandler extends RESTHandler {
         }
     }
 
-    handle({ method, path, query, token, body }: RESTHandleProps): Promise<JSONValue> {
-        const handler = this.getHandler({ method, path, query, token, body });
+    handle({method, path, query, token, body}: RESTHandleProps): Promise<JSONValue> {
+        const handler = this.getHandler({method, path, query, token, body});
 
         if (!handler) {
             throw new NotFoundError('HTTP 404 Not Found');

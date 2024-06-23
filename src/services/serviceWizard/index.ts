@@ -1,7 +1,7 @@
 import { ServiceWrapper, HandleProps, ServiceWrapperParams } from '../../base/jsonrpc11/ServiceWrapper.ts';
 import { GetServiceStatus } from './methods/GetServiceStatus.ts';
 import { JSONRPC11Exception } from '../../base/jsonrpc11/types.ts';
-import { JSONArrayOf, JSONValue } from "../../json.ts";
+import { JSONArrayOf, JSONValue } from "../../lib/json.ts";
 
 export interface ServiceWizardParams extends ServiceWrapperParams {
     upstreamURL: string;

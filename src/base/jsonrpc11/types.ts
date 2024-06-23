@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue } from "/json.ts";
+import {JSONObject, JSONValue} from "../../lib/json.ts";
 
 export interface JSONRPC11Request {
     id: string;
@@ -34,12 +34,14 @@ export class JSONRPC11Exception extends Error {
     code: number;
     name: string;
     error?: string | number | null | JSONObject;
+
     constructor(param: JSONRPC11ExceptionParam) {
         super(param.message);
         this.code = param.code;
         this.name = param.name;
         this.error = param.error;
     }
+
     toJSON(): JSONRPC11Error {
         return {
             code: this.code,

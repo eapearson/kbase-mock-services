@@ -1,0 +1,17 @@
+version: '3'
+
+# This docker-compose is for developer workflows, not for running in production.
+services:
+  test_runner:
+    build:
+      dockerfile: Dockerfile.unit_test
+    volumes:
+      - ${PWD}/src:/app/src
+      - ${PWD}/testing_output:/app/testing_output:rw
+#    volumes:
+#      # The container expects all mock data to be in /data
+#      - ${DATASET_PATH}:/data
+#    networks:
+#      - kbase-dev
+#    ports:
+#      - 3333:3333

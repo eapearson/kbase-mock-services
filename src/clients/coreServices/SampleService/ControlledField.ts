@@ -4,7 +4,7 @@
 
 // import {JSONObject, JSONValue} from "@kbase/ui-lib/lib/json";
 
-import {JSONObject, JSONValue} from "../../../json.ts";
+import {JSONValue} from "../../../lib/json.ts";
 
 export type JSONSchemaFieldType =
     'string' |
@@ -28,7 +28,7 @@ export type ControlledFieldType =
     'number' |
     'boolean';
 
-export interface ControlledFieldBase  {
+export interface ControlledFieldBase {
     type: ControlledFieldType;
     kbase: {
         format: {};

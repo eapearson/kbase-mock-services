@@ -1,5 +1,5 @@
-import { JSONObjectOf } from "../../../types/json.ts";
-import { EpochTimeMS, SDKBoolean } from "../../common.ts";
+import {JSONObjectOf} from "../../../lib/json.ts";
+import {EpochTimeMS, SDKBoolean} from "../../common.ts";
 
 
 export interface ObjectIdentity {

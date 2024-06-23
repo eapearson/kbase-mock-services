@@ -1,5 +1,5 @@
-import ModuleMethod from '/base/jsonrpc11/ModuleMethod.ts';
-import { getJSON } from '/lib/utils.ts';
+import ModuleMethod from '../../../../base/jsonrpc11/ModuleMethod.ts';
+import {getJSON} from '../../../../lib/utils.ts';
 
 export interface ServiceStatus {
     state: string;
